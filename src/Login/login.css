@@ -1,0 +1,29 @@
+h1{
+    padding-bottom: 30px;
+    padding-top: 30px;
+}
+
+.Container{
+    margin-left: 35%;
+    margin-top: 70px;
+    text-align: center;
+    width: 385px;
+    border-radius: 20px;
+    border-style: solid;
+    border-color: #dafaff;
+    background-color: #f5feff;
+}
+
+.Formulario{
+    background-color: #e8fcff;
+    height: 300px;
+    width: auto;
+    text-align: center;
+    display: flex;
+    padding-top: 80px;
+    border-radius: 20px;
+    border-top-left-radius: 0;
+    border-top-right-radius: 0;
+    border-style: solid;
+    border-color: #dafaff;
+}
