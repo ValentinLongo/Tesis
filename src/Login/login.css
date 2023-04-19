@@ -21,9 +21,5 @@ h1{
     text-align: center;
     display: flex;
     padding-top: 80px;
-    border-radius: 20px;
-    border-top-left-radius: 0;
-    border-top-right-radius: 0;
-    border-style: solid;
-    border-color: #dafaff;
+
 }
