@@ -9,18 +9,17 @@ h1{
     margin-bottom: 50px;
     text-align: center;
     width: 385px;
-    border-radius: 20px;
-    border-style: solid;
-    border-color: #dafaff;
-    background-color: #f5feff;
+    border-radius: 10px;
+    background-color: #f1f1f1;
 }
 
 .Formulario{
-    background-color: #e8fcff;
+    background-color: #dbdbdb;
     height: 300px;
     width: auto;
     text-align: center;
     display: flex;
-    padding-top: 80px;
-
+    padding-top: 70px;
+    border-bottom-right-radius: 10px;
+    border-bottom-left-radius: 10px;
 }

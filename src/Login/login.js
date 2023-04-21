@@ -3,7 +3,6 @@ import './login.css'
 
 const onFinish = (values) => {
   console.log('Success:', values);
-  console.log(values.usuario)
 };
 
 
@@ -75,7 +74,7 @@ const login = () => (
                     span: 16,
                 }}
                 >
-                <Button type="default" htmlType="submit">
+                <Button type="primary" htmlType="submit">
                     Aceptar
                 </Button>
                 </Form.Item>

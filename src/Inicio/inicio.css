@@ -1,0 +1,12 @@
+.inicioContainer{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 500px;
+}
+
+.posicionImg{
+    width: 400px;
+    height: 400px;
+    border-radius: 10px;
+}
