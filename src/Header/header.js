@@ -1,6 +1,6 @@
-import { Breadcrumb, Layout, Menu, theme } from 'antd';
-import Item from 'antd/es/list/Item';
+import { Layout, Menu } from 'antd';
 import { Link } from 'react-router-dom';
+import ValentinL from '../assets/ValentinL icono.png'
 
 const { Header } = Layout;
 let items = [

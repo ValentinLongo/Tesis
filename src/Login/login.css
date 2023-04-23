@@ -3,10 +3,14 @@ h1{
     padding-top: 30px;
 }
 
+.loginContainer{
+    height: 500px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
 .Container{
-    margin-left: 35%;
-    margin-top: 30px;
-    margin-bottom: 50px;
     text-align: center;
     width: 385px;
     border-radius: 10px;
