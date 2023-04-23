@@ -1,20 +1,16 @@
 import { Layout, Menu } from 'antd';
 import { Link } from 'react-router-dom';
 import ValentinL from '../assets/ValentinL icono.png'
+import React,{useState} from 'react';
 
 const { Header } = Layout;
-let items = [
-    { name: 'Inicio', link: '/' },
-    { name: 'Nosotros', link: '/nosotros' },
-    { name: 'Login', link: '/login' }
-  ];
 
-function header() {
 
-  // const {
-  //   token: { colorBgContainer },
-  // } = theme.useToken();
-
+  const CHeader = () => {
+    let items = [
+      { name: 'Inicio', link: '/' },
+      { name: 'Nosotros', link: '/nosotros' }
+    ];
   return (
       <Header>
         <Menu theme="dark" mode="horizontal" defaultSelectedKeys={['1']}>
@@ -28,4 +24,4 @@ function header() {
   );
 }
 
-export default header;
+export default CHeader;

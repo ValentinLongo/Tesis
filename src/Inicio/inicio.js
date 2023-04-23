@@ -1,7 +1,7 @@
 import './inicio.css';
 import ValentinL from '../assets/ValentinL.png'
 
-function inicio() {
+function Inicio() {
   return (
     <div className='todo'>
       <div className="inicioContainer">
@@ -14,4 +14,4 @@ function inicio() {
   );
 }
 
-export default inicio ;
+export default Inicio ;
