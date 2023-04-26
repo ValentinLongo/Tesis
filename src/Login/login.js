@@ -3,8 +3,6 @@ import './login.css'
 import React,{ useState } from 'react';
 import CApp from '../App.js'
 
-
-
 const Login = () => {
     const [user, setUser] = useState('');
     const [password, setPassword] = useState('');
