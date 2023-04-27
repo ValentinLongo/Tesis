@@ -22,7 +22,6 @@ const Login = () => {
           .then(response => response.json())
           .then(json => {
             // Leer la respuesta de la API
-            console.log(json);
             if(json.message === 'Usuario Correcto'){ // Si el valor de message es "Usuario Correcto"
                 let datosUsuario = JSON.stringify(json.data[0]); // Obtener los datos de usuario del objeto JSON devuelto
                 localStorage.setItem('account',datosUsuario);
@@ -43,7 +42,7 @@ const Login = () => {
     const onFinish = (values) => {
         setUser(values.usuario);
         setPassword(values.contrasenia);
-        hacerLogin(user,password);
+        hacerLogin(values.usuario,values.contrasenia);
     };
 
     const onFinishFailed = (errorInfo) => {
