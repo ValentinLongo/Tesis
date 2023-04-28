@@ -24,11 +24,11 @@ function App() {
   return (
     
     <Layout className="layout todo">
-      <CHeader/>
-      <Breadcrumb style={{ margin: '15px 50px' }}>
+      <CHeader />
+      <Breadcrumb style={{ margin: '5px 20px' }}>
           <Breadcrumb.Item className='bienvenidoText'>Bienvenido, {datos.usu_nombre} !</Breadcrumb.Item>
         </Breadcrumb>
-      <Content style={{padding: '0 50px',marginTop:'0px'}}>
+      <Content style={{padding: '0 20px',marginTop:'0px'}}>
         <div className="site-layout-content" style={{background: colorBgContainer}}>
           <Routes>
             <Route path='/' element={<CInicio/>}/>
