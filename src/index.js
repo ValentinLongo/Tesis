@@ -4,7 +4,7 @@ import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 import { BrowserRouter } from 'react-router-dom';
-import CLogin from './Login/login.js'
+import CLogin from './pages/Login/login.js'
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(

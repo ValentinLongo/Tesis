@@ -1,7 +1,7 @@
 import { Button, Checkbox, Form, Input, Alert } from 'antd';
 import './login.css'
 import React,{ useState } from 'react';
-import CApp from '../App.js'
+import CApp from '../../App.js'
 
 const Login = () => {
     const [user, setUser] = useState('');

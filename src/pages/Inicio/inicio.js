@@ -1,5 +1,5 @@
 import './inicio.css';
-import ValentinL from '../assets/ValentinL.png'
+import ValentinL from '../../assets/ValentinL.png'
 
 function Inicio() {
   return (

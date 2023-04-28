@@ -1,5 +1,6 @@
 import React,{useState, useEffect} from 'react';
 import { Space, Table, Button, Drawer, Form, Row, Col, Input, Select} from 'antd';
+import { Option } from 'antd/es/mentions';
 
 const columns = [
     {
@@ -98,7 +99,7 @@ const columns = [
             <Col span={12}>
               <Form.Item name="tipoUsuario" label="Tipo de usuario" rules={[{ required: true, message: 'Porfavor, ingrese tipo de usuario' }]}>
               <Select placeholder="Selecciona tipo de usuario">
-                  <Option value="Cliente">Cliente</Option>
+                  <Option value='Cliente'>Cliente</Option>
                   <Option value="Administrador">Administrador</Option>
                 </Select>
               </Form.Item>

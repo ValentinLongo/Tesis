@@ -1,9 +1,9 @@
 import './App.css';
 // import CLogin from './Login/login.js'
-import CClientes from './Clientes/clientes';
-import CHeader from './Header/header.js'
-import CFooter from './Footer/footer.js'
-import CInicio from './Inicio/inicio.js'
+import CClientes from './pages/Clientes/clientes';
+import CHeader from './pages/Header/header.js'
+import CFooter from './pages/Footer/footer.js'
+import CInicio from './pages/Inicio/inicio.js'
 import { Layout, theme,Breadcrumb } from 'antd';
 import { Outlet, Route, Routes } from 'react-router-dom';
 import React,{useState, useEffect} from 'react';
