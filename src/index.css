@@ -1,6 +1,8 @@
 *{
     margin: 0;
+    /* font-family: "SF Pro Text", "SF Pro Icons", "Helvetica Neue", Helvetica, Arial, sans-serif; */
+    font-family: "Bahnschrift Light";
 }
 html{
-
+background-color: #f1f1f1;
 }

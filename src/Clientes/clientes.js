@@ -5,31 +5,31 @@ const columns = [
     {
       title: 'ID',
       dataIndex: 'usu_codigo',
-      key: 'usu_codigo',
+      //key: 'usu_codigo',
       width: 30,
       //render: (text) => <a>{text}</a>,
     },
     {
       title: 'Nombre',
       dataIndex: 'usu_nombre',
-      key: 'usu_nombre',
+      //key: 'usu_nombre',
       width: 150,
     },
     {
       title: 'Email',
       dataIndex: 'usu_email',
-      key: 'usu_email',
+      //key: 'usu_email',
       width: 150,
     },
     {
       title: 'Telefono',
       dataIndex: 'usu_telefono',
-      key: 'usu_telefono',
+      //key: 'usu_telefono',
       width: 150,
     },
     {
       title: 'Acciones',
-      key: 'action',
+      //key: 'action',
       render: (_, record) => (
         <Space size="middle">
           <Button onClick={() => handleDelete(record)}>Editar</Button>

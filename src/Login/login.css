@@ -15,12 +15,12 @@ h1{
     text-align: center;
     width: 380px;
     border-radius: 10px;
-    background-color: #f1f1f1;
+    background-color: #4096FF;
 }
 
 .Formulario{
     background-color: #dbdbdb;
-    height: 280px;
+    height: 240px;
     width: auto;
     text-align: center;
     display: flex;
