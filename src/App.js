@@ -1,15 +1,17 @@
 import './App.css';
-// import CLogin from './Login/login.js'
 import CClientes from './pages/Clientes/clientes';
 import CHeader from './pages/Header/header.js'
 import CFooter from './pages/Footer/footer.js'
 import CInicio from './pages/Inicio/inicio.js'
 import { Layout, theme,Breadcrumb } from 'antd';
 import { Outlet, Route, Routes } from 'react-router-dom';
-import React,{useState, useEffect} from 'react';
+import React,{useState, useEffect,useContext} from 'react';
+import { loginContext } from './pages/Context/loginContext';
 const { Content } = Layout;
 
 function App() {
+  const{user} = useContext(loginContext);
+
   const {
     token: { colorBgContainer },
   } = theme.useToken();
@@ -26,7 +28,7 @@ function App() {
     <Layout className="layout todo">
       <CHeader />
       <Breadcrumb style={{ margin: '5px 20px' }}>
-          <Breadcrumb.Item className='bienvenidoText'>Bienvenido, {datos.usu_nombre} !</Breadcrumb.Item>
+          <Breadcrumb.Item className='bienvenidoText'>Bienvenido, {user} !</Breadcrumb.Item>
         </Breadcrumb>
       <Content style={{padding: '0 20px',marginTop:'0px'}}>
         <div className="site-layout-content" style={{background: colorBgContainer}}>

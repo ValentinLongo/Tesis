@@ -5,12 +5,14 @@ import App from './App';
 import reportWebVitals from './reportWebVitals';
 import { BrowserRouter } from 'react-router-dom';
 import CLogin from './pages/Login/login.js'
-
+import StateLogin from './pages/Context/StateLogin';
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
-    <BrowserRouter>
-      <CLogin/>
+    <BrowserRouter> 
+      <StateLogin>
+        <CLogin/>      
+      </StateLogin>
     </BrowserRouter>
   </React.StrictMode>
 );
