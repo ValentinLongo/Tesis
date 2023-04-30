@@ -7,6 +7,10 @@ import { Option } from 'antd/es/mentions';
     const[clientes,setClientes] = useState('');
     const [formValues, setFormValues] = useState({});
 
+    useEffect(() => {
+        datos();
+    }, []);
+
     //Columnas
     const columns = [
       {
@@ -35,24 +39,54 @@ import { Option } from 'antd/es/mentions';
         width: 150,
       },
       {
+        title: 'Tipo',
+        dataIndex: 'usu_permiso',
+        width: 150,
+        render: (text, record) => {
+          const usu_permiso = definirTipoUsuario(text);
+          return usu_permiso;
+        },
+      },
+      {
         title: 'Acciones',
         //key: 'action',
         render: (_, record) => (
           <Space size="middle">
-            <Button>Editar</Button>
+            <Button onClick={showDrawer2}>Editar</Button>
             <Button danger onClick={() => eliminarUsuario(record)}>Eliminar</Button>
           </Space>
         ),
         width: 150,
       },
     ];
-    //Ventana Lateral
+    //Le paso el id de permiso y me devuelve el nombre
+    const definirTipoUsuario = (values) => {
+      let usu_permiso = "";
+      if(values === "1"){
+          usu_permiso = "Cliente";
+      }
+      else if (values === "2"){
+        usu_permiso = "Administrador";
+      }
+      return usu_permiso
+    };    
+
+    //Drawer agregar usuario
     const [open, setOpen] = useState(false);
     const showDrawer = () => {
       setOpen(true);
     };
     const onClose = () => {
       setOpen(false);
+    };
+
+    //Drawer modificar usuario
+    const [open2, setOpen2] = useState(false);
+    const showDrawer2 = () => {
+      setOpen2(true);
+    };
+    const onClose2 = () => {
+      setOpen2(false);
     };
 
     //Traer Usuarios
@@ -130,58 +164,102 @@ import { Option } from 'antd/es/mentions';
         });
     };
 
-    useEffect(() => {
-        datos();
-    }, []);
-
     return (
       <div>
-      <Drawer title="Usuario" width={500} placement="right" onClose={onClose} open={open}
-      extra={ 
-      <Space>
-        <Button onClick={onClose}>Cancelar</Button>
-        <Button onClick={() => {agregarUsuario()}} type="primary">
-          Aceptar
-        </Button>
-      </Space>}>
-        <Form layout="vertical" onValuesChange={(_, values) => setFormValues(values)}>
-          <Row gutter={14}>
-            <Col span={12}>
-              <Form.Item name="nombre" label="Nombre" rules={[{ required: true, message: 'Porfavor, ingrese nombre' }]}>
-                <Input placeholder='Ingrese nombre de usuario'/>
-              </Form.Item>
-            </Col>
-            <Col span={12}>
-              <Form.Item name="contra" label="Contraseña" type="password" rules={[{ required: true, message: 'Porfavor, ingrese contraseña'}]}>
-                <Input placeholder='Ingrese contraseña'/>
-              </Form.Item>
-            </Col>
-          </Row>
-          <Row gutter={14}>
-            <Col span={12}>
-              <Form.Item name="tipoUsuario" label="Tipo de usuario" rules={[{ required: true, message: 'Porfavor, ingrese tipo de usuario' }]}>
-              <Select placeholder="Selecciona tipo de usuario">
-                  <Option value='Cliente'>Cliente</Option>
-                  <Option value="Administrador">Administrador</Option>
-                </Select>
-              </Form.Item>
-            </Col>
-            <Col span={12}>
-              <Form.Item name="telefono" label="Telefono" rules={[{ required: true, message: 'Porfavor, ingrese telefono'}]}>
-                <Input placeholder='Ingrese telefono'/>
-              </Form.Item>
-            </Col>
-          </Row>
-          <Row gutter={16}>
-            <Col span={24}>
-              <Form.Item name="email" label="Email" rules={[{ required: true, message: 'Porfavor, ingrese email'}]}>
-                <Input placeholder='Ingrese email'/>
-              </Form.Item>
-            </Col>
-          </Row>
-        </Form>
-      </Drawer>
-        <Button type='primary' onClick={showDrawer} style={{marginBottom: '20px'}}>Agregar Cliente</Button>
+        
+        <Drawer title="Agregar Usuario" width={500} placement="right" onClose={onClose} open={open}
+        extra={ 
+        <Space>
+          <Button onClick={onClose}>Cancelar</Button>
+          <Button onClick={() => {agregarUsuario()}} type="primary">
+            Aceptar
+          </Button>
+        </Space>}>
+          <Form layout="vertical" onValuesChange={(_, values) => setFormValues(values)}>
+            <Row gutter={14}>
+              <Col span={12}>
+                <Form.Item name="nombre" label="Nombre" rules={[{ required: true, message: 'Porfavor, ingrese nombre' }]}>
+                  <Input placeholder='Ingrese nombre de usuario'/>
+                </Form.Item>
+              </Col>
+              <Col span={12}>
+                <Form.Item name="contra" label="Contraseña" type="password" rules={[{ required: true, message: 'Porfavor, ingrese contraseña'}]}>
+                <Input.Password placeholder='Ingrese contraseña '/>
+                </Form.Item>
+              </Col>
+            </Row>
+            <Row gutter={14}>
+              <Col span={12}>
+                <Form.Item name="tipoUsuario" label="Tipo de usuario" rules={[{ required: true, message: 'Porfavor, ingrese tipo de usuario' }]}>
+                <Select placeholder="Selecciona tipo de usuario">
+                    <Option value='Cliente'>Cliente</Option>
+                    <Option value="Administrador">Administrador</Option>
+                  </Select>
+                </Form.Item>
+              </Col>
+              <Col span={12}>
+                <Form.Item name="telefono" label="Telefono" rules={[{ required: true, message: 'Porfavor, ingrese telefono'}]}>
+                  <Input placeholder='Ingrese telefono'/>
+                </Form.Item>
+              </Col>
+            </Row>
+            <Row gutter={16}>
+              <Col span={24}>
+                <Form.Item name="email" label="Email" rules={[{ required: true, message: 'Porfavor, ingrese email'}]}>
+                  <Input placeholder='Ingrese email'/>
+                </Form.Item>
+              </Col>
+            </Row>
+          </Form>
+        </Drawer>
+
+        <Drawer title="Modificar Usuario" width={500} placement="right" onClose={onClose2} open={open2}
+        extra={ 
+        <Space>
+          <Button onClick={onClose}>Cancelar</Button>
+          <Button onClick={() => {agregarUsuario()}} type="primary">
+            Aceptar
+          </Button>
+        </Space>}>
+          <Form layout="vertical" onValuesChange={(_, values) => setFormValues(values)}>
+            <Row gutter={14}>
+              <Col span={12}>
+                <Form.Item name="nombre" label="Nombre" rules={[{ required: true, message: 'Porfavor, ingrese nombre' }]}>
+                  <Input placeholder='Ingrese nombre de usuario'/>
+                </Form.Item>
+              </Col>
+              <Col span={12}>
+                <Form.Item name="contra" label="Contraseña" type="password" rules={[{ required: true, message: 'Porfavor, ingrese contraseña'}]}>
+                  <Input.Password placeholder='Ingrese contraseña '/>
+                </Form.Item>
+              </Col>
+            </Row>
+            <Row gutter={14}>
+              <Col span={12}>
+                <Form.Item name="tipoUsuario" label="Tipo de usuario" rules={[{ required: true, message: 'Porfavor, ingrese tipo de usuario' }]}>
+                <Select placeholder="Selecciona tipo de usuario">
+                    <Option value='Cliente'>Cliente</Option>
+                    <Option value="Administrador">Administrador</Option>
+                  </Select>
+                </Form.Item>
+              </Col>
+              <Col span={12}>
+                <Form.Item name="telefono" label="Telefono" rules={[{ required: true, message: 'Porfavor, ingrese telefono'}]}>
+                  <Input placeholder='Ingrese telefono'/>
+                </Form.Item>
+              </Col>
+            </Row>
+            <Row gutter={16}>
+              <Col span={24}>
+                <Form.Item name="email" label="Email" rules={[{ required: true, message: 'Porfavor, ingrese email'}]}>
+                  <Input placeholder='Ingrese email'/>
+                </Form.Item>
+              </Col>
+            </Row>
+          </Form>
+        </Drawer>
+
+        <Button type='primary' onClick={showDrawer} style={{marginBottom: '20px'}}>Agregar Usuario</Button>
         <Table columns={columns} dataSource={clientes}/>
       </div>
   );

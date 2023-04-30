@@ -9,7 +9,7 @@ const { Header } = Layout;
 
   let items = [
     { name: 'Inicio', link: '/' },
-    { name: 'Clientes', link: '/clientes' }
+    { name: 'Usuarios', link: '/clientes' }
   ];
 
   return (
