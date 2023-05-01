@@ -6,11 +6,12 @@ import { Option } from 'antd/es/mentions';
   const CClientes = () => {
     const[clientes,setClientes] = useState('');
     const [formValues, setFormValues] = useState({});
+    const [modificarUsuario, setModificarUsuario] = useState({});
+    const [open2, setOpen2] = useState(false);
 
     useEffect(() => {
         datos();
     }, []);
-
     //Columnas
     const columns = [
       {
@@ -52,13 +53,21 @@ import { Option } from 'antd/es/mentions';
         //key: 'action',
         render: (_, record) => (
           <Space size="middle">
-            <Button onClick={showDrawer2}>Editar</Button>
+            <Button onClick={() => onEdit(record)}>Editar</Button>
             <Button danger onClick={() => eliminarUsuario(record)}>Eliminar</Button>
           </Space>
         ),
         width: 150,
       },
     ];
+
+    //Traer Usuarios
+    const datos = () =>{    
+        fetch('https://apis-node.vercel.app/usuarios')
+        .then(response => response.json())
+        .then(data => setClientes(data.data))
+        .catch(error => console.error(error)) 
+    }     
     //Le paso el id de permiso y me devuelve el nombre
     const definirTipoUsuario = (values) => {
       let usu_permiso = "";
@@ -81,21 +90,17 @@ import { Option } from 'antd/es/mentions';
     };
 
     //Drawer modificar usuario
-    const [open2, setOpen2] = useState(false);
     const showDrawer2 = () => {
       setOpen2(true);
     };
     const onClose2 = () => {
       setOpen2(false);
+      setModificarUsuario({});
     };
-
-    //Traer Usuarios
-    const datos = () =>{    
-        fetch('https://apis-node.vercel.app/usuarios')
-        .then(response => response.json())
-        .then(data => setClientes(data.data))
-        .catch(error => console.error(error)) 
-    } 
+    const onEdit = (record) => {
+      setModificarUsuario(record);
+      showDrawer2();
+    };
 
     //Arma objeto de Usuario
     const mapValuesToApi = (values) => {
@@ -165,9 +170,8 @@ import { Option } from 'antd/es/mentions';
     };
 
     return (
-      <div>
-        
-        <Drawer title="Agregar Usuario" width={500} placement="right" onClose={onClose} open={open}
+      <div>   
+        <Drawer title="Agregar Usuario" width={500} placement="right" onClose={() => {onClose()}} open={open}
         extra={ 
         <Space>
           <Button onClick={onClose}>Cancelar</Button>
@@ -175,7 +179,7 @@ import { Option } from 'antd/es/mentions';
             Aceptar
           </Button>
         </Space>}>
-          <Form layout="vertical" onValuesChange={(_, values) => setFormValues(values)}>
+         <Form layout="vertical" onValuesChange={(_, values) => setFormValues(values)}>
             <Row gutter={14}>
               <Col span={12}>
                 <Form.Item name="nombre" label="Nombre" rules={[{ required: true, message: 'Porfavor, ingrese nombre' }]}>
@@ -213,7 +217,8 @@ import { Option } from 'antd/es/mentions';
           </Form>
         </Drawer>
 
-        <Drawer title="Modificar Usuario" width={500} placement="right" onClose={onClose2} open={open2}
+        <Drawer title="Modificar Usuario" width={500} placement="right" onClose={() => {onClose2()}} open={open2}
+        destroyOnClose = "true"
         extra={ 
         <Space>
           <Button onClick={onClose}>Cancelar</Button>
@@ -221,23 +226,23 @@ import { Option } from 'antd/es/mentions';
             Aceptar
           </Button>
         </Space>}>
-          <Form layout="vertical" onValuesChange={(_, values) => setFormValues(values)}>
+         <Form initialValues={modificarUsuario} layout="vertical">
             <Row gutter={14}>
               <Col span={12}>
-                <Form.Item name="nombre" label="Nombre" rules={[{ required: true, message: 'Porfavor, ingrese nombre' }]}>
-                  <Input placeholder='Ingrese nombre de usuario'/>
+                <Form.Item name="usu_nombre" label="Nombre" rules={[{ required: true, message: 'Porfavor, ingrese nombre' }]}>
+                  <Input/>
                 </Form.Item>
               </Col>
               <Col span={12}>
                 <Form.Item name="contra" label="Contraseña" type="password" rules={[{ required: true, message: 'Porfavor, ingrese contraseña'}]}>
-                  <Input.Password placeholder='Ingrese contraseña '/>
+                  <Input.Password defaultValue={modificarUsuario.usu_contra} placeholder='Ingrese contraseña '/>
                 </Form.Item>
               </Col>
             </Row>
             <Row gutter={14}>
               <Col span={12}>
-                <Form.Item name="tipoUsuario" label="Tipo de usuario" rules={[{ required: true, message: 'Porfavor, ingrese tipo de usuario' }]}>
-                <Select placeholder="Selecciona tipo de usuario">
+                <Form.Item name="tipoUsuario" label="Tipo de usuario" rules={[{ required: true, message: 'Porfavor, seleccione tipo de usuario' }]}>
+                <Select placeholder="Selecciona tipo de usuario" defaultValue={modificarUsuario.usu_permiso === "1" ? "Cliente" : "Administrador"}>
                     <Option value='Cliente'>Cliente</Option>
                     <Option value="Administrador">Administrador</Option>
                   </Select>
@@ -245,14 +250,14 @@ import { Option } from 'antd/es/mentions';
               </Col>
               <Col span={12}>
                 <Form.Item name="telefono" label="Telefono" rules={[{ required: true, message: 'Porfavor, ingrese telefono'}]}>
-                  <Input placeholder='Ingrese telefono'/>
+                  <Input placeholder='Ingrese telefono' defaultValue={modificarUsuario.usu_telefono}/>
                 </Form.Item>
               </Col>
             </Row>
             <Row gutter={16}>
               <Col span={24}>
                 <Form.Item name="email" label="Email" rules={[{ required: true, message: 'Porfavor, ingrese email'}]}>
-                  <Input placeholder='Ingrese email'/>
+                  <Input placeholder='Ingrese email' defaultValue={modificarUsuario.usu_email}/>
                 </Form.Item>
               </Col>
             </Row>
