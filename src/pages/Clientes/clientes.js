@@ -1,71 +1,174 @@
-import React,{useState, useEffect} from 'react';
+import { SearchOutlined } from '@ant-design/icons';
+import Highlighter from 'react-highlight-words';
+import React,{useState, useEffect,useRef} from 'react';
 import { Space, Table, Button, Drawer, Form, Row, Col, Input, Select } from 'antd';
 import { Option } from 'antd/es/mentions';
 
-
   const CClientes = () => {
-    const[clientes,setClientes] = useState('');
+    const[data,setData] = useState('');
     const [formValues, setFormValues] = useState({});
     const [modificarUsuario, setModificarUsuario] = useState({});
     const [open2, setOpen2] = useState(false);
+    const [searchText, setSearchText] = useState('');
+    const [searchedColumn, setSearchedColumn] = useState('');
+    const searchInput = useRef(null);
 
     useEffect(() => {
         datos();
     }, []);
-    //Columnas
-    const columns = [
-      {
-        title: 'ID',
-        dataIndex: 'usu_codigo',
-        //key: 'usu_codigo',
-        width: 30,
-        //render: (text) => <a>{text}</a>,
+
+  const handleSearch = (selectedKeys, confirm, dataIndex) => {
+    confirm();
+    setSearchText(selectedKeys[0]);
+    setSearchedColumn(dataIndex);
+  };
+  const handleReset = (clearFilters) => {
+    clearFilters();
+    setSearchText('');
+  };
+  const getColumnSearchProps = (dataIndex) => ({
+    filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters, close }) => (
+      <div
+        style={{
+          padding: 8,
+        }}
+        onKeyDown={(e) => e.stopPropagation()}
+      >
+        <Input
+          ref={searchInput}
+          placeholder={`Search ${dataIndex}`}
+          value={selectedKeys[0]}
+          onChange={(e) => setSelectedKeys(e.target.value ? [e.target.value] : [])}
+          onPressEnter={() => handleSearch(selectedKeys, confirm, dataIndex)}
+          style={{
+            marginBottom: 8,
+            display: 'block',
+          }}
+        />
+        <Space>
+          <Button
+            type="primary"
+            onClick={() => handleSearch(selectedKeys, confirm, dataIndex)}
+            icon={<SearchOutlined />}
+            size="small"
+            style={{
+              width: 90,
+            }}
+          >
+            Search
+          </Button>
+          <Button
+            onClick={() => clearFilters && handleReset(clearFilters)}
+            size="small"
+            style={{
+              width: 90,
+            }}
+          >
+            Reset
+          </Button>
+          <Button
+            type="link"
+            size="small"
+            onClick={() => {
+              confirm({
+                closeDropdown: false,
+              });
+              setSearchText(selectedKeys[0]);
+              setSearchedColumn(dataIndex);
+            }}
+          >
+            Filter
+          </Button>
+          <Button
+            type="link"
+            size="small"
+            onClick={() => {
+              close();
+            }}
+          >
+            close
+          </Button>
+        </Space>
+      </div>
+    ),
+    filterIcon: (filtered) => (
+      <SearchOutlined
+        style={{
+          color: filtered ? '#1890ff' : undefined,
+        }}
+      />
+    ),
+    onFilter: (value, record) =>
+      record[dataIndex].toString().toLowerCase().includes(value.toLowerCase()),
+    onFilterDropdownOpenChange: (visible) => {
+      if (visible) {
+        setTimeout(() => searchInput.current?.select(), 100);
+      }
+    },
+    render: (text) =>
+      searchedColumn === dataIndex ? (
+        <Highlighter
+          highlightStyle={{
+            backgroundColor: '#ffc069',
+            padding: 0,
+          }}
+          searchWords={[searchText]}
+          autoEscape
+          textToHighlight={text ? text.toString() : ''}
+        />
+      ) : (
+        text
+      ),
+  });
+  const columns = [
+    {
+      title: 'Nombre',
+      dataIndex: 'usu_nombre',
+      key: 'name',
+      width: '30%',
+      ...getColumnSearchProps('usu_nombre')
+    },
+    {
+      title: 'Email',
+      dataIndex: 'usu_email',
+      key: 'usu_email',
+      width: 150,
+      ...getColumnSearchProps('usu_email'),
+    },
+    {
+      title: 'Telefono',
+      dataIndex: 'usu_telefono',
+      key: 'usu_telefono',
+      width: 150,
+      ...getColumnSearchProps('usu_telefono')
+    },
+    {
+      title: 'Tipo',
+      dataIndex: 'usu_permiso',
+      width: 150,
+      render: (text, record) => {
+        const usu_permiso = definirTipoUsuario(text);
+        return usu_permiso;
       },
-      {
-        title: 'Nombre',
-        dataIndex: 'usu_nombre',
-        //key: 'usu_nombre',
-        width: 150,
-      },
-      {
-        title: 'Email',
-        dataIndex: 'usu_email',
-        //key: 'usu_email',
-        width: 150,
-      },
-      {
-        title: 'Telefono',
-        dataIndex: 'usu_telefono',
-        //key: 'usu_telefono',
-        width: 150,
-      },
-      {
-        title: 'Tipo',
-        dataIndex: 'usu_permiso',
-        width: 150,
-        render: (text, record) => {
-          const usu_permiso = definirTipoUsuario(text);
-          return usu_permiso;
-        },
-      },
-      {
-        title: 'Acciones',
-        //key: 'action',
-        render: (_, record) => (
-          <Space size="middle">
-            <Button onClick={() => onEdit(record)}>Editar</Button>
-            <Button danger onClick={() => eliminarUsuario(record)}>Eliminar</Button>
-          </Space>
-        ),
-        width: 150,
-      },
-    ];
+    },
+    {
+      title: 'Acciones',
+      //key: 'action',
+      render: (_, record) => (
+        <Space size="middle">
+          <Button onClick={() => onEdit(record)}>Editar</Button>
+          <Button danger onClick={() => eliminarUsuario(record)}>Eliminar</Button>
+        </Space>
+      ),
+      width: 150,
+    },
+  ];
 
     //Traer Usuarios
     const datos = () =>{    
         fetch('https://apis-node.vercel.app/usuarios')
         .then(response => response.json())
-        .then(data => setClientes(data.data))
+        .then(data => setData(data.data))
         .catch(error => console.error(error)) 
     }     
     //Le paso el id de permiso y me devuelve el nombre
@@ -293,10 +396,9 @@ import { Option } from 'antd/es/mentions';
             </Row>
           </Form>
         </Drawer>
-
+        
         <Button type='primary' onClick={showDrawer} style={{marginBottom: '20px'}}>Agregar Usuario</Button>
-        <Input name='busqueda' style={{width: '150px'}}/>
-        <Table columns={columns} dataSource={clientes}/>
+        <Table columns={columns} dataSource={data}/>
       </div>
   );
 }
