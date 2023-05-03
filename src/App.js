@@ -5,7 +5,7 @@ import CFooter from './pages/Footer/footer.js'
 import CInicio from './pages/Inicio/inicio.js'
 import { Layout, theme,Breadcrumb } from 'antd';
 import { Outlet, Route, Routes } from 'react-router-dom';
-import React,{useState, useEffect,useContext} from 'react';
+import React,{useState,useContext} from 'react';
 import { loginContext } from './pages/Context/loginContext';
 const { Content } = Layout;
 
@@ -17,12 +17,6 @@ function App() {
   } = theme.useToken();
   const [datos, setDatos] = useState([]);
 
-  useEffect(() => {
-    const datosEnStorage = JSON.parse(localStorage.getItem("account"));
-    if (datosEnStorage) {
-      setDatos(datosEnStorage);
-    }
-  }, []);
   return (
     
     <Layout className="layout todo">

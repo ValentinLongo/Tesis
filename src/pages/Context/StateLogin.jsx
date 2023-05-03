@@ -37,6 +37,12 @@ const hacerLogin = (usuario, contra) => {
       });
   };
 
+const hacerLogOut = () => {
+  setUser('');
+  setIdUsuario(0);
+  setIsLogin(false); 
+}
+
 return(
     <loginContext.Provider
     value= {{
@@ -44,7 +50,8 @@ return(
         idUsuario,
         isLogin,
         hasError,
-        hacerLogin
+        hacerLogin,
+        hacerLogOut
     }}
     >
         {children}
