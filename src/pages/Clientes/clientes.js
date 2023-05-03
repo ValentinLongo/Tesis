@@ -141,6 +141,7 @@ import { Option } from 'antd/es/mentions';
         console.error('Error al eliminar usuario:', error);
       });
     };
+
     //Agregar nuevo Usuario
     const agregarUsuario = () => {
       const url = "https://apis-node.vercel.app/usuarios"; 
@@ -169,6 +170,35 @@ import { Option } from 'antd/es/mentions';
         });
     };
 
+    //Modificar usuario
+    const modificarUsu = () => {
+      const idUsuario = modificarUsuario.usu_codigo;
+      const url = "https://apis-node.vercel.app/usuarios/" + idUsuario; 
+      // Realizar la solicitud POST y obtener la respuesta
+      console.log(JSON.stringify(mapValuesToApi(formValues)));
+      fetch(url, {
+        method: "PUT",
+        body: JSON.stringify(mapValuesToApi(formValues)),
+        headers: { "Content-Type": "application/json" },
+      })
+        .then(response => response.json())
+        .then(json => {
+          // Leer la respuesta de la API
+          if(json.message === 'Usuario update succefully'){ // Si el valor de message es "Usuario Correcto"
+            onClose();
+            datos();
+            alert("Usuario modificado correctamente")
+          }
+          else{ //En caso de que sea incorrecto
+            console.log(json.message)
+          }
+        })
+        .catch(error => {
+          // Manejar errores de la solicitud
+          console.error(error);
+        });
+    };
+    
     return (
       <div>   
         <Drawer title="Agregar Usuario" width={500} placement="right" onClose={() => {onClose()}} open={open}
@@ -221,16 +251,16 @@ import { Option } from 'antd/es/mentions';
         destroyOnClose = "true"
         extra={ 
         <Space>
-          <Button onClick={onClose}>Cancelar</Button>
-          <Button onClick={() => {agregarUsuario()}} type="primary">
+          <Button onClick={onClose2}>Cancelar</Button>
+          <Button onClick={() => { modificarUsu()}} type="primary">
             Aceptar
           </Button>
         </Space>}>
-         <Form initialValues={modificarUsuario} layout="vertical">
+         <Form layout="vertical" onValuesChange={(_, values) => setFormValues(values)}>
             <Row gutter={14}>
               <Col span={12}>
-                <Form.Item name="usu_nombre" label="Nombre" rules={[{ required: true, message: 'Porfavor, ingrese nombre' }]}>
-                  <Input/>
+                <Form.Item name="nombre" label="Nombre" rules={[{ required: true, message: 'Porfavor, ingrese nombre' }]}>
+                  <Input defaultValue={modificarUsuario.usu_nombre}/>
                 </Form.Item>
               </Col>
               <Col span={12}>
@@ -265,6 +295,7 @@ import { Option } from 'antd/es/mentions';
         </Drawer>
 
         <Button type='primary' onClick={showDrawer} style={{marginBottom: '20px'}}>Agregar Usuario</Button>
+        <Input name='busqueda' style={{width: '150px'}}/>
         <Table columns={columns} dataSource={clientes}/>
       </div>
   );
