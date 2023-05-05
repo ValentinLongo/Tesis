@@ -303,7 +303,7 @@ import { Option } from 'antd/es/mentions';
     };
     
     return (
-      <div>   
+      <div style={{padding:'24px'}}>   
         <Drawer title="Agregar Usuario" width={500} placement="right" onClose={() => {onClose()}} open={open}
         extra={ 
         <Space>
