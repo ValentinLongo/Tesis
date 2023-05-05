@@ -11,7 +11,7 @@ const { Header } = Layout;
   let items = [
     { name: 'Inicio', link: '/'},
     { name: 'Usuarios', link: '/clientes' },
-    { name: 'Pedidos', children:[{name: 'Nuevo Pedido', link: '/Nuevopedidos'},{name: 'Hisotorial de Pedidos', link: '/Nuevopedidos'}] }
+    { name: 'Pedidos', children:[{name: 'Nuevo Pedido', link: '/nuevopedido'},{name: 'Hisotorial de Pedidos', link: '/historialpedidos'}] }
   ];
 
   return (

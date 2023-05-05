@@ -1,8 +1,10 @@
 import './App.css';
 import CClientes from './pages/Clientes/clientes';
-import CHeader from './pages/Header/header.js'
-import CFooter from './pages/Footer/footer.js'
-import CInicio from './pages/Inicio/inicio.js'
+import CHeader from './pages/Header/header.js';
+import CFooter from './pages/Footer/footer.js';
+import CInicio from './pages/Inicio/inicio.js';
+import CNuevoPedido from './pages/Pedidos/NuevoPedido/nuevoPedido.js';
+import CHistorialPedidos from './pages/Pedidos/HistorialPedidos/historialPedidos.js';
 import { Layout, theme,Breadcrumb } from 'antd';
 import { Outlet, Route, Routes } from 'react-router-dom';
 import React,{useContext} from 'react';
@@ -29,6 +31,8 @@ function App() {
           <Routes>
             <Route path='/' element={<CInicio/>}/>
             <Route path='/clientes' element={<CClientes/>}/>
+            <Route path='/nuevopedido' element={<CNuevoPedido/>}/>
+            <Route path='/historialpedidos' element={<CHistorialPedidos/>}/>
           </Routes>
           <Outlet/>
         </div>
