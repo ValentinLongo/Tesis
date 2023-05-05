@@ -3,9 +3,10 @@ import CClientes from './pages/Clientes/clientes';
 import CHeader from './pages/Header/header.js'
 import CFooter from './pages/Footer/footer.js'
 import CInicio from './pages/Inicio/inicio.js'
+import CPedidos from './pages/Pedidos/pedidos.js'
 import { Layout, theme,Breadcrumb } from 'antd';
 import { Outlet, Route, Routes } from 'react-router-dom';
-import React,{useState,useContext} from 'react';
+import React,{useContext} from 'react';
 import { loginContext } from './pages/Context/loginContext';
 const { Content } = Layout;
 
@@ -15,7 +16,7 @@ function App() {
   const {
     token: { colorBgContainer },
   } = theme.useToken();
-  const [datos, setDatos] = useState([]);
+
 
   return (
     
@@ -29,6 +30,7 @@ function App() {
           <Routes>
             <Route path='/' element={<CInicio/>}/>
             <Route path='/clientes' element={<CClientes/>}/>   
+            <Route path='/pedidos' element={<CPedidos/>}/>  
           </Routes>
           <Outlet/>
         </div>
