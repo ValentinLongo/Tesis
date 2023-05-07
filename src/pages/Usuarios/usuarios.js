@@ -1,22 +1,25 @@
 import { SearchOutlined } from '@ant-design/icons';
 import Highlighter from 'react-highlight-words';
-import React,{useState, useEffect,useRef} from 'react';
+import React,{useState, useEffect,useRef, useContext} from 'react';
 import { Space, Table, Button, Drawer, Form, Row, Col, Input, Select } from 'antd';
 import { Option } from 'antd/es/mentions';
+import { loginContext } from '../Context/loginContext';
+import AgregarUsuario from './agregarUsuario';
 
-  const CClientes = () => {
-    const[data,setData] = useState('');
-    const [formValues, setFormValues] = useState({});
+  const CUsuarios = () => {
+    const {data, datos, open2, showDrawer,showDrawer2,onClose,onClose2} = useContext(loginContext);
+
     const [modificarUsuario, setModificarUsuario] = useState({});
-    const [open2, setOpen2] = useState(false);
     const [searchText, setSearchText] = useState('');
     const [searchedColumn, setSearchedColumn] = useState('');
+    const [usuCodigo, setUsuCodigo] = useState(0);
     const searchInput = useRef(null);
 
-    useEffect(() => {
-        datos();
-    }, []);
+  useEffect(() => {
+    datos();
+  }, []);
 
+  //BUSCADOR DE LA TABLA 
   const handleSearch = (selectedKeys, confirm, dataIndex) => {
     confirm();
     setSearchText(selectedKeys[0]);
@@ -120,6 +123,7 @@ import { Option } from 'antd/es/mentions';
         text
       ),
   });
+
   const columns = [
     {
       title: 'Nombre',
@@ -164,15 +168,8 @@ import { Option } from 'antd/es/mentions';
     },
   ];
 
-    //Traer Usuarios
-    const datos = () =>{    
-        fetch('https://apis-node.vercel.app/usuarios')
-        .then(response => response.json())
-        .then(data => setData(data.data))
-        .catch(error => console.error(error)) 
-    }     
-    //Le paso el id de permiso y me devuelve el nombre
-    const definirTipoUsuario = (values) => {
+  //Le paso el id de permiso y me devuelve el nombre
+  const definirTipoUsuario = (values) => {
       let usu_permiso = "";
       if(values === "1"){
           usu_permiso = "Cliente";
@@ -181,50 +178,34 @@ import { Option } from 'antd/es/mentions';
         usu_permiso = "Administrador";
       }
       return usu_permiso
-    };    
+  };
 
-    //Drawer agregar usuario
-    const [open, setOpen] = useState(false);
-    const showDrawer = () => {
-      setOpen(true);
-    };
-    const onClose = () => {
-      setOpen(false);
-    };
+  const onEdit = (record) => {
+    setUsuCodigo(record.usu_codigo);
+    setModificarUsuario(record);
+    showDrawer2();
+  };
 
-    //Drawer modificar usuario
-    const showDrawer2 = () => {
-      setOpen2(true);
-    };
-    const onClose2 = () => {
-      setOpen2(false);
-      setModificarUsuario({});
-    };
-    const onEdit = (record) => {
-      setModificarUsuario(record);
-      showDrawer2();
-    };
-
-    //Arma objeto de Usuario
-    const mapValuesToApi = (values) => {
+  //Arma objeto de Usuario
+  const mapValuesToApi = (values) => {
       let usu_permiso = "";
-      if(values.tipoUsuario === "Cliente"){
+      if(values.usu_permiso === "Cliente"){
           usu_permiso = "1";
       }
       else{
         usu_permiso = "2";
       }
       return {
-        usu_nombre: values.nombre,
-        usu_contra: values.contra,
-        usu_email: values.email,
-        usu_telefono: values.telefono,
+        usu_nombre: values.usu_nombre,
+        usu_contra: values.usu_contra,
+        usu_email: values.usu_email,
+        usu_telefono: values.usu_telefono,
         usu_permiso: usu_permiso
       };
-    };
+  };
 
-    //Eliminar Usuario
-    const eliminarUsuario = (record) => {
+  //Eliminar Usuario
+  const eliminarUsuario = (record) => {
       fetch(`https://apis-node.vercel.app/usuarios/${record.usu_codigo}`, {
       method: 'DELETE',
       headers: {
@@ -243,52 +224,25 @@ import { Option } from 'antd/es/mentions';
       .catch(error => {
         console.error('Error al eliminar usuario:', error);
       });
-    };
+  };
 
-    //Agregar nuevo Usuario
-    const agregarUsuario = () => {
-      const url = "https://apis-node.vercel.app/usuarios"; 
-      // Realizar la solicitud POST y obtener la respuesta
-      console.log(JSON.stringify(mapValuesToApi(formValues)));
-      fetch(url, {
-        method: "POST",
-        body: JSON.stringify(mapValuesToApi(formValues)),
-        headers: { "Content-Type": "application/json" },
-      })
-        .then(response => response.json())
-        .then(json => {
-          // Leer la respuesta de la API
-          if(json.message === 'usuario created succefully'){ // Si el valor de message es "Usuario Correcto"
-            onClose();
-            datos();
-            alert("Usuario creado correctamente")
-          }
-          else{ //En caso de que sea incorrecto
-            console.log(json.message)
-          }
-        })
-        .catch(error => {
-          // Manejar errores de la solicitud
-          console.error(error);
-        });
-    };
 
-    //Modificar usuario
-    const modificarUsu = () => {
-      const idUsuario = modificarUsuario.usu_codigo;
+  //Modificar usuario
+  const modificarUsu = () => {
+      const idUsuario = usuCodigo;
       const url = "https://apis-node.vercel.app/usuarios/" + idUsuario; 
       // Realizar la solicitud POST y obtener la respuesta
-      console.log(JSON.stringify(mapValuesToApi(formValues)));
+      console.log(JSON.stringify(mapValuesToApi(modificarUsuario)));
       fetch(url, {
         method: "PUT",
-        body: JSON.stringify(mapValuesToApi(formValues)),
+        body: JSON.stringify(mapValuesToApi(modificarUsuario)),
         headers: { "Content-Type": "application/json" },
       })
         .then(response => response.json())
         .then(json => {
           // Leer la respuesta de la API
           if(json.message === 'Usuario update succefully'){ // Si el valor de message es "Usuario Correcto"
-            onClose();
+            onClose2();
             datos();
             alert("Usuario modificado correctamente")
           }
@@ -300,55 +254,11 @@ import { Option } from 'antd/es/mentions';
           // Manejar errores de la solicitud
           console.error(error);
         });
-    };
+  };
     
     return (
       <div style={{padding:'24px'}}>   
-        <Drawer title="Agregar Usuario" width={500} placement="right" onClose={() => {onClose()}} open={open}
-        extra={ 
-        <Space>
-          <Button onClick={onClose}>Cancelar</Button>
-          <Button onClick={() => {agregarUsuario()}} type="primary">
-            Aceptar
-          </Button>
-        </Space>}>
-         <Form layout="vertical" onValuesChange={(_, values) => setFormValues(values)}>
-            <Row gutter={14}>
-              <Col span={12}>
-                <Form.Item name="nombre" label="Nombre" rules={[{ required: true, message: 'Porfavor, ingrese nombre' }]}>
-                  <Input placeholder='Ingrese nombre de usuario'/>
-                </Form.Item>
-              </Col>
-              <Col span={12}>
-                <Form.Item name="contra" label="Contraseña" type="password" rules={[{ required: true, message: 'Porfavor, ingrese contraseña'}]}>
-                <Input.Password placeholder='Ingrese contraseña '/>
-                </Form.Item>
-              </Col>
-            </Row>
-            <Row gutter={14}>
-              <Col span={12}>
-                <Form.Item name="tipoUsuario" label="Tipo de usuario" rules={[{ required: true, message: 'Porfavor, ingrese tipo de usuario' }]}>
-                <Select placeholder="Selecciona tipo de usuario">
-                    <Option value='Cliente'>Cliente</Option>
-                    <Option value="Administrador">Administrador</Option>
-                  </Select>
-                </Form.Item>
-              </Col>
-              <Col span={12}>
-                <Form.Item name="telefono" label="Telefono" rules={[{ required: true, message: 'Porfavor, ingrese telefono'}]}>
-                  <Input placeholder='Ingrese telefono'/>
-                </Form.Item>
-              </Col>
-            </Row>
-            <Row gutter={16}>
-              <Col span={24}>
-                <Form.Item name="email" label="Email" rules={[{ required: true, message: 'Porfavor, ingrese email'}]}>
-                  <Input placeholder='Ingrese email'/>
-                </Form.Item>
-              </Col>
-            </Row>
-          </Form>
-        </Drawer>
+        <AgregarUsuario/>
 
         <Drawer title="Modificar Usuario" width={500} placement="right" onClose={() => {onClose2()}} open={open2}
         destroyOnClose = "true"
@@ -359,22 +269,22 @@ import { Option } from 'antd/es/mentions';
             Aceptar
           </Button>
         </Space>}>
-         <Form layout="vertical" onValuesChange={(_, values) => setFormValues(values)}>
+         <Form layout="vertical" initialValues={modificarUsuario} onValuesChange={(_, values) => setModificarUsuario(values)}>
             <Row gutter={14}>
               <Col span={12}>
-                <Form.Item name="nombre" label="Nombre" rules={[{ required: true, message: 'Porfavor, ingrese nombre' }]}>
+                <Form.Item name="usu_nombre" label="Nombre" rules={[{ required: true, message: 'Porfavor, ingrese nombre' }]}>
                   <Input defaultValue={modificarUsuario.usu_nombre}/>
                 </Form.Item>
               </Col>
               <Col span={12}>
-                <Form.Item name="contra" label="Contraseña" type="password" rules={[{ required: true, message: 'Porfavor, ingrese contraseña'}]}>
+                <Form.Item name="usu_contra" label="Contraseña" type="password" rules={[{ required: true, message: 'Porfavor, ingrese contraseña'}]}>
                   <Input.Password defaultValue={modificarUsuario.usu_contra} placeholder='Ingrese contraseña '/>
                 </Form.Item>
               </Col>
             </Row>
             <Row gutter={14}>
               <Col span={12}>
-                <Form.Item name="tipoUsuario" label="Tipo de usuario" rules={[{ required: true, message: 'Porfavor, seleccione tipo de usuario' }]}>
+                <Form.Item name="usu_permiso" label="Tipo de usuario" rules={[{ required: true, message: 'Porfavor, seleccione tipo de usuario' }]}>
                 <Select placeholder="Selecciona tipo de usuario" defaultValue={modificarUsuario.usu_permiso === "1" ? "Cliente" : "Administrador"}>
                     <Option value='Cliente'>Cliente</Option>
                     <Option value="Administrador">Administrador</Option>
@@ -382,14 +292,14 @@ import { Option } from 'antd/es/mentions';
                 </Form.Item>
               </Col>
               <Col span={12}>
-                <Form.Item name="telefono" label="Telefono" rules={[{ required: true, message: 'Porfavor, ingrese telefono'}]}>
+                <Form.Item name="usu_telefono" label="Telefono" rules={[{ required: true, message: 'Porfavor, ingrese telefono'}]}>
                   <Input placeholder='Ingrese telefono' defaultValue={modificarUsuario.usu_telefono}/>
                 </Form.Item>
               </Col>
             </Row>
             <Row gutter={16}>
               <Col span={24}>
-                <Form.Item name="email" label="Email" rules={[{ required: true, message: 'Porfavor, ingrese email'}]}>
+                <Form.Item name="usu_email" label="Email" rules={[{ required: true, message: 'Porfavor, ingrese email'}]}>
                   <Input placeholder='Ingrese email' defaultValue={modificarUsuario.usu_email}/>
                 </Form.Item>
               </Col>
@@ -403,4 +313,4 @@ import { Option } from 'antd/es/mentions';
   );
 }
 
-export default CClientes;
+export default CUsuarios;

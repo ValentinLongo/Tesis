@@ -1,11 +1,13 @@
-import React,{ useState } from 'react';
+import React,{ useState,useEffect } from 'react';
 import { loginContext } from './loginContext';
 
+//-----------LOGIN-----------
 const StateLogin = ({children}) =>{
 const [user, setUser] = useState('');
 const [idUsuario, setIdUsuario] = useState(0);
 const [isLogin, setIsLogin] = useState(false);
 const [hasError, setHasError] = useState(false);
+const [formValues, setFormValues] = useState({});
 
 const hacerLogin = (usuario, contra) => {
     const url = "https://apis-node.vercel.app/usuarios/login";  // Coloca la URL de la API aquí
@@ -35,13 +37,41 @@ const hacerLogin = (usuario, contra) => {
         // Manejar errores de la solicitud
         console.error(error);
       });
-  };
-
+};
 const hacerLogOut = () => {
   setUser('');
   setIdUsuario(0);
   setIsLogin(false); 
 }
+
+//-----------USUARIOS-----------
+const [data,setData] = useState('');
+const [open, setOpen] = useState(false);
+const [open2, setOpen2] = useState(false);
+const [modificarUsuario, setModificarUsuario] = useState({});
+
+const datos = () =>{    
+  fetch('https://apis-node.vercel.app/usuarios')
+  .then(response => response.json())
+  .then(data => setData(data.data))
+  .catch(error => console.error(error)) 
+}
+
+//Drawer agregar usuario
+const showDrawer = () => {
+  setOpen(true);
+};
+const onClose = () => {
+      setOpen(false);
+};
+//Drawer modificar usuario
+const showDrawer2 = () => {
+      setOpen2(true);
+};
+const onClose2 = () => {
+      setOpen2(false);
+};
+
 
 return(
     <loginContext.Provider
@@ -51,7 +81,19 @@ return(
         isLogin,
         hasError,
         hacerLogin,
-        hacerLogOut
+        hacerLogOut,
+        data,
+        datos,
+        open,
+        open2,
+        showDrawer,
+        showDrawer2,
+        onClose,
+        onClose2,
+        formValues,
+        setFormValues,
+        modificarUsuario,
+        setModificarUsuario
     }}
     >
         {children}

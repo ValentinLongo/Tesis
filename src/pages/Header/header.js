@@ -10,7 +10,7 @@ const { Header } = Layout;
   const{hacerLogOut} = useContext(loginContext);
   let items = [
     { name: 'Inicio', link: '/'},
-    { name: 'Usuarios', link: '/clientes' },
+    { name: 'Usuarios', link: '/usuarios' },
     { name: 'Pedidos', children:[{name: 'Nuevo Pedido', link: '/nuevopedido'},{name: 'Hisotorial de Pedidos', link: '/historialpedidos'}] }
   ];
 

@@ -1,5 +1,5 @@
 import './App.css';
-import CClientes from './pages/Clientes/clientes';
+import CUsuarios from './pages/Usuarios/usuarios.js';
 import CHeader from './pages/Header/header.js';
 import CFooter from './pages/Footer/footer.js';
 import CInicio from './pages/Inicio/inicio.js';
@@ -30,7 +30,7 @@ function App() {
         <div className="site-layout-content" style={{background: colorBgContainer}}>
           <Routes>
             <Route path='/' element={<CInicio/>}/>
-            <Route path='/clientes' element={<CClientes/>}/>
+            <Route path='/usuarios' element={<CUsuarios/>}/>
             <Route path='/nuevopedido' element={<CNuevoPedido/>}/>
             <Route path='/historialpedidos' element={<CHistorialPedidos/>}/>
           </Routes>
