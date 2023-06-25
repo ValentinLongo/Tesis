@@ -72,6 +72,15 @@ const onClose2 = () => {
       setOpen2(false);
 };
 
+//-----------PEDIDOS-----------
+const [drawerVisible, setDrawerVisible] = useState(false);
+const buscarArticuloDrawer = () => {
+  setDrawerVisible(true);
+};
+
+const cerrarBuscarArticuloDrawer = () => {
+  setDrawerVisible(false);
+};
 
 return(
     <loginContext.Provider
@@ -93,12 +102,17 @@ return(
         formValues,
         setFormValues,
         modificarUsuario,
-        setModificarUsuario
+        setModificarUsuario,
+        buscarArticuloDrawer,
+        cerrarBuscarArticuloDrawer,
+        drawerVisible
     }}
     >
         {children}
     </loginContext.Provider>
 )
+
+
 
 }
 

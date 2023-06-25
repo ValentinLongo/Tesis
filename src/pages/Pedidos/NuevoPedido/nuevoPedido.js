@@ -1,7 +1,11 @@
-import React from 'react';
-import { Form, Input, Select, Button, Row, Col, DatePicker } from 'antd';
+import React, { useContext } from 'react';
+import { Form, Input, Button, Row, Col, DatePicker, Drawer, Select } from 'antd';
 import moment from 'moment';
+import { loginContext } from '../../Context/loginContext.js';
+import BuscarArticulo from './buscarArticulo.js'
+
 const { Option } = Select;
+const { TextArea } = Input;
 
 const today = new Date();
 const day = today.getDate();
@@ -10,10 +14,12 @@ const year = today.getFullYear();
 const formattedDate = moment([year, month, day]);
 
 const NuevoPedido = () => {
+  const { buscarArticuloDrawer,cerrarBuscarArticuloDrawer,drawerVisible } = useContext(loginContext);
+
   const onFinish = (values) => {
     console.log('Valores enviados:', values);
   };
-  
+
   return (
     <Row justify="center">
       <Col xs={24} sm={20} md={16} lg={12} xl={8}>
@@ -25,15 +31,16 @@ const NuevoPedido = () => {
             </Form.Item>
 
             <Form.Item label="Cliente" name="cliente" labelCol={{ span: 24 }}>
-              <Input disabled/>
+              <Input disabled />
             </Form.Item>
 
             <Form.Item label="Articulo" name="articulo" labelCol={{ span: 24 }}>
-              <Select>
-                <Option value="option1">Opción 1</Option>
-                <Option value="option2">Opción 2</Option>
-                <Option value="option3">Opción 3</Option>
-              </Select>
+              <div style={{ display: 'flex', alignItems: 'center' }}>
+                <Input style={{ marginRight: '10px' }} disabled/>
+                <Button type="primary" onClick={buscarArticuloDrawer}>
+                  Buscar
+                </Button>
+              </div>
             </Form.Item>
 
             <Form.Item label="Fecha" name="fecha" labelCol={{ span: 24 }}>
@@ -49,7 +56,7 @@ const NuevoPedido = () => {
             </Form.Item>
 
             <Form.Item label="Observaciones" name="observaciones" labelCol={{ span: 24 }}>
-              <Input.TextArea />
+              <TextArea />
             </Form.Item>
 
             <Form.Item>
@@ -60,10 +67,12 @@ const NuevoPedido = () => {
               </div>
             </Form.Item>
           </Form>
+
+          <BuscarArticulo></BuscarArticulo>
         </div>
       </Col>
     </Row>
   );
-}
+};
 
 export default NuevoPedido;
