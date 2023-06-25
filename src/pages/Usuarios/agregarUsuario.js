@@ -1,7 +1,7 @@
 import { useContext } from "react";
 import { loginContext } from '../Context/loginContext';
 import { Option } from 'antd/es/mentions';
-import { Space, Button, Drawer, Form, Row, Col, Input, Select } from 'antd';
+import { Space, Button, Drawer, Form, Row, Col, Input, Select, message } from 'antd';
 
 //Arma objeto de Usuario
 const mapValuesToApi = (values) => {
@@ -39,7 +39,7 @@ const AgregarUsuario = () =>{
         if(json.message === 'usuario created succefully'){ // Si el valor de message es "Usuario Correcto"
           onClose();
           datos();
-          alert("Usuario creado correctamente")
+          message.success("Usuario creado correctamente")
         }
         else{ //En caso de que sea incorrecto
           console.log(json.message)

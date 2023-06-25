@@ -1,7 +1,7 @@
 import { SearchOutlined } from '@ant-design/icons';
 import Highlighter from 'react-highlight-words';
 import React,{useState, useEffect,useRef, useContext} from 'react';
-import { Space, Table, Button, Drawer, Form, Row, Col, Input, Select } from 'antd';
+import { Space, Table, Button, Drawer, Form, Row, Col, Input, Select, message } from 'antd';
 import { Option } from 'antd/es/mentions';
 import { loginContext } from '../Context/loginContext';
 import AgregarUsuario from './agregarUsuario';
@@ -189,6 +189,7 @@ import AgregarUsuario from './agregarUsuario';
   //Arma objeto de Usuario
   const mapValuesToApi = (values) => {
       let usu_permiso = "";
+      console.log(values.usu_permiso)
       if(values.usu_permiso === "Cliente"){
           usu_permiso = "1";
       }
@@ -200,7 +201,7 @@ import AgregarUsuario from './agregarUsuario';
         usu_contra: values.usu_contra,
         usu_email: values.usu_email,
         usu_telefono: values.usu_telefono,
-        usu_permiso: usu_permiso
+        usu_permiso: values.usu_permiso
       };
   };
 
@@ -215,6 +216,7 @@ import AgregarUsuario from './agregarUsuario';
     .then(response => response.json())
     .then(json => {
       if(json.message === 'usuario deleted succefully'){ 
+        message.success("Usuario eliminado");
         datos();
       }
       else{ //En caso de que sea incorrecto
@@ -244,7 +246,7 @@ import AgregarUsuario from './agregarUsuario';
           if(json.message === 'Usuario update succefully'){ // Si el valor de message es "Usuario Correcto"
             onClose2();
             datos();
-            alert("Usuario modificado correctamente")
+            message.success("Usuario modificado correctamente")
           }
           else{ //En caso de que sea incorrecto
             console.log(json.message)
@@ -284,12 +286,12 @@ import AgregarUsuario from './agregarUsuario';
             </Row>
             <Row gutter={14}>
               <Col span={12}>
-                <Form.Item name="usu_permiso" label="Tipo de usuario" rules={[{ required: true, message: 'Porfavor, seleccione tipo de usuario' }]}>
-                <Select placeholder="Selecciona tipo de usuario" defaultValue={modificarUsuario.usu_permiso === "1" ? "Cliente" : "Administrador"}>
-                    <Option value='Cliente'>Cliente</Option>
-                    <Option value="Administrador">Administrador</Option>
-                  </Select>
-                </Form.Item>
+              <Form.Item name="usu_permiso" label="Tipo de usuario" rules={[{ required: true, message: 'Porfavor, seleccione tipo de usuario' }]}>
+                <Select placeholder="Selecciona tipo de usuario" value={modificarUsuario.usu_permiso}>
+                  <Option value='1'>Cliente</Option>
+                  <Option value="2">Administrador</Option>
+                </Select>
+              </Form.Item>
               </Col>
               <Col span={12}>
                 <Form.Item name="usu_telefono" label="Telefono" rules={[{ required: true, message: 'Porfavor, ingrese telefono'}]}>
