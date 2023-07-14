@@ -56,6 +56,9 @@ const datos = () =>{
   .then(data => setData(data.data))
   .catch(error => console.error(error)) 
 }
+useEffect(() => {
+  datos();
+}, []);
 
 //Drawer agregar usuario
 const showDrawer = () => {
@@ -82,6 +85,19 @@ const cerrarBuscarArticuloDrawer = () => {
   setDrawerVisible(false);
 };
 
+//-----------MARCAS-----------
+const [dataMarca,setDataMarca] = useState('');
+
+const datosMarcas = () => {
+  fetch('https://apis-node.vercel.app/marca')
+    .then(response => response.json())
+    .then(data => setDataMarca(data.data))
+    .catch(error => console.error(error));
+};
+  
+useEffect(() => {
+  datosMarcas();
+}, []);
 return(
     <loginContext.Provider
     value= {{
@@ -105,7 +121,9 @@ return(
         setModificarUsuario,
         buscarArticuloDrawer,
         cerrarBuscarArticuloDrawer,
-        drawerVisible
+        drawerVisible,
+        dataMarca,
+        datosMarcas
     }}
     >
         {children}

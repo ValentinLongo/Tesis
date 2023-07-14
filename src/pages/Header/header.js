@@ -32,6 +32,13 @@ const CHeader = () => {
         { name: 'Historial de Pedidos', link: '/historialpedidos' },
       ],
     },
+    {
+      name: 'Articulos',
+      children: [
+        { name: 'Articulos', link: '/articulos' },
+        { name: 'Marcas', link: '/marcas' },
+      ]
+    }
   ];
 
   return (

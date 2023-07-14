@@ -15,10 +15,6 @@ import AgregarUsuario from './agregarUsuario';
     const [usuCodigo, setUsuCodigo] = useState(0);
     const searchInput = useRef(null);
 
-  useEffect(() => {
-    datos();
-  }, []);
-
   //BUSCADOR DE LA TABLA 
   const handleSearch = (selectedKeys, confirm, dataIndex) => {
     confirm();

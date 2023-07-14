@@ -1,5 +1,5 @@
 import React, { useContext } from 'react';
-import { Form, Input, Button, Row, Col, DatePicker, Drawer, Select } from 'antd';
+import { Form, Input, Button, Row, Col, DatePicker, Select } from 'antd';
 import moment from 'moment';
 import { loginContext } from '../../Context/loginContext.js';
 import BuscarArticulo from './buscarArticulo.js'
@@ -14,7 +14,7 @@ const year = today.getFullYear();
 const formattedDate = moment([year, month, day]);
 
 const NuevoPedido = () => {
-  const { buscarArticuloDrawer,cerrarBuscarArticuloDrawer,drawerVisible } = useContext(loginContext);
+  const { buscarArticuloDrawer } = useContext(loginContext);
 
   const onFinish = (values) => {
     console.log('Valores enviados:', values);
