@@ -6,6 +6,7 @@ import { loginContext } from '../Context/loginContext';
 import AgregarMarca from './agregarMarca';
 
 const CMarcas = () => {
+    const {abrirDrawerMarca} = useContext(loginContext);
     const { dataMarca, datosMarcas } = useContext(loginContext);
     const [searchText, setSearchText] = useState('');
     const [searchedColumn, setSearchedColumn] = useState('');
@@ -237,7 +238,7 @@ const CMarcas = () => {
             </Row>
           </Form>
         </Drawer>
-        <Button type='primary' style={{marginBottom: '20px'}}>Agregar Marca</Button>
+        <Button type='primary' onClick={() => {abrirDrawerMarca()}} style={{marginBottom: '20px'}}>Agregar Marca</Button>
         <Table columns={columns} dataSource={dataMarca}/>
       </div>
     );

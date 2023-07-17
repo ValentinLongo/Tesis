@@ -87,6 +87,7 @@ const cerrarBuscarArticuloDrawer = () => {
 
 //-----------MARCAS-----------
 const [dataMarca,setDataMarca] = useState('');
+const [drawerAgMarca, setDrawerAgMarca] = useState(false);
 
 const datosMarcas = () => {
   fetch('https://apis-node.vercel.app/marca')
@@ -98,6 +99,15 @@ const datosMarcas = () => {
 useEffect(() => {
   datosMarcas();
 }, []);
+
+const abrirDrawerMarca = () =>{
+  setDrawerAgMarca(true);
+}
+
+const cerrarDrawerMarca = () =>{
+  setDrawerAgMarca(false);
+}
+
 return(
     <loginContext.Provider
     value= {{
@@ -123,7 +133,10 @@ return(
         cerrarBuscarArticuloDrawer,
         drawerVisible,
         dataMarca,
-        datosMarcas
+        datosMarcas,
+        drawerAgMarca,
+        abrirDrawerMarca,
+        cerrarDrawerMarca
     }}
     >
         {children}
