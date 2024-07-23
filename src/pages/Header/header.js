@@ -39,7 +39,8 @@ const CHeader = () => {
         { name: 'Marcas', link: '/marcas' },
         { name: 'Categorias', link: '/categorias' },
       ]
-    }
+    },
+    { name: 'Servicios', link: '/servicios' }
   ];
 
   return (
