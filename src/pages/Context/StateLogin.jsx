@@ -10,33 +10,37 @@ const [hasError, setHasError] = useState(false);
 const [formValues, setFormValues] = useState({});
 
 const hacerLogin = (usuario, contra) => {
-    const url = "https://apis-node.vercel.app/usuarios/login";  // Coloca la URL de la API aquí
-    const data = { usu_nombre: usuario, usu_contra: contra };  // Coloca los datos que quieres enviar aquí
-
-    // Realizar la solicitud POST y obtener la respuesta
-    fetch(url, {
+  const url = "https://apis-node.vercel.app/usuarios/login";
+  const data = { usu_nombre: usuario, usu_contra: contra };
+  console.log(data);
+  
+  fetch(url, {
       method: "POST",
       body: JSON.stringify(data),
       headers: { "Content-Type": "application/json" },
-    })
-      .then(response => response.json())
-      .then(json => {
-        // Leer la respuesta de la API
-        if(json.message === 'Usuario Correcto'){ // Si el valor de message es "Usuario Correcto"
-            setUser(usuario);
-            setIdUsuario(json.data[0].usu_codigo);
-            setIsLogin(true); 
-            setHasError(false);
-        }
-        else{ //En caso de que sea incorrecto
-            setIsLogin(false);
-            setHasError(true);
-        }
-      })
-      .catch(error => {
-        // Manejar errores de la solicitud
-        console.error(error);
-      });
+  })
+  .then(response => {
+      if (!response.ok) {
+          return response.text().then(text => { throw new Error(text) });
+      }
+      return response.json();
+  })
+  .then(json => {
+      if (json.message === 'Usuario Correcto') {
+          setUser(usuario);
+          setIdUsuario(json.data[0].usu_codigo);
+          setIsLogin(true);
+          setHasError(false);
+      } else {
+          setIsLogin(false);
+          setHasError(true);
+      }
+  })
+  .catch(error => {
+      console.error('Error:', error);
+      setIsLogin(false);
+      setHasError(true);
+  });
 };
 const hacerLogOut = () => {
   setUser('');
@@ -84,6 +88,30 @@ const buscarArticuloDrawer = () => {
 const cerrarBuscarArticuloDrawer = () => {
   setDrawerVisible(false);
 };
+
+//-----------CATEGORIAS-----------
+const [dataCategoria,setDataCategoria] = useState('');
+const [drawerAgCategoria, setDrawerAgCategoria] = useState(false);
+
+const abrirDrawerCategoria = () =>{
+  setDrawerAgCategoria(true);
+}
+
+const cerrarDrawerCategoria = () =>{
+  setDrawerAgCategoria(false);
+}
+
+const datosCategorias = () => {
+  fetch('https://apis-node.vercel.app/categoria')
+    .then(response => response.json())
+    .then(data => setDataCategoria(data.data))
+    .catch(error => console.error(error));
+    console.log(dataCategoria);
+};
+
+useEffect(() => {
+  datosCategorias();
+}, []);
 
 //-----------MARCAS-----------
 const [dataMarca,setDataMarca] = useState('');
@@ -136,7 +164,11 @@ return(
         datosMarcas,
         drawerAgMarca,
         abrirDrawerMarca,
-        cerrarDrawerMarca
+        cerrarDrawerMarca,
+        drawerAgCategoria,
+        abrirDrawerCategoria,
+        cerrarDrawerCategoria,
+        datosCategorias
     }}
     >
         {children}

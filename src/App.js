@@ -7,6 +7,7 @@ import CNuevoPedido from './pages/Pedidos/NuevoPedido/nuevoPedido.js';
 import CHistorialPedidos from './pages/Pedidos/HistorialPedidos/historialPedidos.js';
 import CArticulos from './pages/Articulos/articulos'; 
 import CMarcas from './pages/Marcas/marcas';
+import CCategorias from './pages/Categorias/categorias.js';
 import { Layout, theme,Breadcrumb } from 'antd';
 import { Outlet, Route, Routes } from 'react-router-dom';
 import React,{useContext} from 'react';
@@ -37,6 +38,7 @@ function App() {
             <Route path='/historialpedidos' element={<CHistorialPedidos/>}/>
             <Route path='/articulos' element={<CArticulos/>}/>
             <Route path='/marcas' element={<CMarcas/>}/>
+            <Route path='/categorias' element={<CCategorias/>}/>
           </Routes>
           <Outlet/>
         </div>

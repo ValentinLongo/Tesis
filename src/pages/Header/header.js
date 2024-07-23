@@ -37,6 +37,7 @@ const CHeader = () => {
       children: [
         { name: 'Articulos', link: '/articulos' },
         { name: 'Marcas', link: '/marcas' },
+        { name: 'Categorias', link: '/categorias' },
       ]
     }
   ];
