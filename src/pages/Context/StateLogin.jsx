@@ -136,6 +136,30 @@ const cerrarDrawerMarca = () =>{
   setDrawerAgMarca(false);
 }
 
+//-----------CATEGORIAS-----------
+const [dataArticulo,setDataArticulo] = useState('');
+const [drawerAgArticulo, setDrawerAgArticulo] = useState(false);
+
+const abrirDrawerArticulo = () =>{
+  setDrawerAgArticulo(true);
+}
+
+const cerrarDrawerArticulo = () =>{
+  setDrawerAgArticulo(false);
+}
+
+const datosArticulos = () => {
+  fetch('https://apis-node.vercel.app/articulo')
+    .then(response => response.json())
+    .then(data => setDataArticulo(data.data))
+    .catch(error => console.error(error));
+    console.log(dataArticulo);
+};
+
+useEffect(() => {
+  datosArticulos();
+}, []);
+
 return(
     <loginContext.Provider
     value= {{
@@ -168,7 +192,11 @@ return(
         drawerAgCategoria,
         abrirDrawerCategoria,
         cerrarDrawerCategoria,
-        datosCategorias
+        datosCategorias,
+        drawerAgArticulo,
+        abrirDrawerArticulo,
+        cerrarDrawerArticulo,
+        datosArticulos
     }}
     >
         {children}
