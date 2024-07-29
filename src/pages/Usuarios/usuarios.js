@@ -203,7 +203,7 @@ import AgregarUsuario from './agregarUsuario';
 
   //Eliminar Usuario
   const eliminarUsuario = (record) => {
-      fetch(`https://apis-node.vercel.app/usuarios/${record.usu_codigo}`, {
+      fetch(`${process.env.REACT_APP_API_URL}usuarios/${record.usu_codigo}`, {
       method: 'DELETE',
       headers: {
         'Content-Type': 'application/json'
@@ -228,7 +228,7 @@ import AgregarUsuario from './agregarUsuario';
   //Modificar usuario
   const modificarUsu = () => {
       const idUsuario = usuCodigo;
-      const url = "https://apis-node.vercel.app/usuarios/" + idUsuario; 
+      const url =  `${process.env.REACT_APP_API_URL}usuarios/` + idUsuario; 
       // Realizar la solicitud POST y obtener la respuesta
       console.log(JSON.stringify(mapValuesToApi(modificarUsuario)));
       fetch(url, {

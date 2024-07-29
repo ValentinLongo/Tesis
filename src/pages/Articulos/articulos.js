@@ -32,7 +32,7 @@ const CArticulos = () => {
   };
 
   const datosArticulos = () => {
-    fetch('https://apis-node.vercel.app/articulo')
+    fetch(`${process.env.REACT_APP_API_URL}articulo`)
       .then(response => response.json())
       .then(data => {
         setDataArticulo(data.data || []);
@@ -41,14 +41,14 @@ const CArticulos = () => {
   };
 
   const datosMarcas = () => {
-    fetch('https://apis-node.vercel.app/marca')
+    fetch(`${process.env.REACT_APP_API_URL}marca`)
       .then(response => response.json())
       .then(data => setMarcas(data.data || []))
       .catch(error => console.error('Error fetching marcas:', error));
   };
 
   const datosCategorias = () => {
-    fetch('https://apis-node.vercel.app/categoria')
+    fetch(`${process.env.REACT_APP_API_URL}categoria`)
       .then(response => response.json())
       .then(data => setCategorias(data.data || []))
       .catch(error => console.error('Error fetching categorias:', error));
@@ -59,6 +59,61 @@ const CArticulos = () => {
     datosMarcas();
     datosCategorias();
   }, []);
+
+  const onEdit = (record) => {
+    setArtCodigo(record.art_codigo);
+    setArticuloModi(record);
+    abrirDrawerEditarArticulo();
+  };
+
+  const onDelete = (record) => {
+    const url = `${process.env.REACT_APP_API_URL}articulo/` + record.art_codigo;
+    fetch(url, {
+      method: "DELETE",
+    })
+      .then(response => response.json())
+      .then(json => {
+        if (json.message === 'articulo deleted successfully') {
+          datosArticulos();
+          message.success("Artículo eliminado correctamente");
+        } else {
+          console.log(json.message);
+        }
+      })
+      .catch(error => {
+        console.error('Error al eliminar artículo:', error);
+      });
+  };
+
+  const mapValuesToApi = (values) => {
+    return {
+      art_nombre: values.art_nombre,
+      art_marca: values.art_marca,
+      art_categoria: values.art_categoria
+    };
+  };
+
+  const modificarArticulo = () => {
+    const url = `${process.env.REACT_APP_API_URL}articulo/` + artCodigo;
+    fetch(url, {
+      method: "PUT",
+      body: JSON.stringify(mapValuesToApi(articuloModi)),
+      headers: { "Content-Type": "application/json" },
+    })
+      .then(response => response.json())
+      .then(json => {
+        if (json.message === 'articulo updated successfully') {
+          cerrarDrawerEditarArticulo();
+          datosArticulos();
+          message.success("Artículo modificado correctamente");
+        } else {
+          console.log(json.message);
+        }
+      })
+      .catch(error => {
+        console.error('Error al modificar artículo:', error);
+      });
+  };
 
   const columns = [
     {
@@ -86,59 +141,16 @@ const CArticulos = () => {
       width: '20%',
     },
     {
-      title: 'Precio',
-      dataIndex: 'art_precio',
-      key: 'art_precio',
-      width: '20%',
-    },
-    {
       title: 'Acciones',
       render: (_, record) => (
         <Space size="middle">
           <Button onClick={() => onEdit(record)}>Editar</Button>
-          <Button danger>Eliminar</Button>
+          <Button danger onClick={() => onDelete(record)}>Eliminar</Button>
         </Space>
       ),
       width: 60,
     },
   ];
-
-  const onEdit = (record) => {
-    setArtCodigo(record.art_codigo);
-    setArticuloModi(record);
-    abrirDrawerEditarArticulo();
-  };
-
-  const mapValuesToApi = (values) => {
-    return {
-      art_nombre: values.art_nombre,
-      art_marca: values.art_marca,
-      art_categoria: values.art_categoria,
-      art_precio: values.art_precio,
-    };
-  };
-
-  const modificarArticulo = () => {
-    const url = "https://apis-node.vercel.app/articulo/" + artCodigo;
-    fetch(url, {
-      method: "PUT",
-      body: JSON.stringify(mapValuesToApi(articuloModi)),
-      headers: { "Content-Type": "application/json" },
-    })
-      .then(response => response.json())
-      .then(json => {
-        if (json.message === 'articulo updated successfully') {
-          cerrarDrawerEditarArticulo();
-          datosArticulos();
-          message.success("Artículo modificado correctamente");
-        } else {
-          console.log(json.message);
-        }
-      })
-      .catch(error => {
-        console.error('Error al modificar artículo:', error);
-      });
-  };
 
   return (
     <div style={{ padding: 20 }}>
@@ -170,7 +182,12 @@ const CArticulos = () => {
             </Col>
             <Col span={24}>
               <Form.Item name="art_marca" label="Marca" rules={[{ required: true, message: 'Por favor, seleccione una marca' }]}>
-                <Select defaultValue={articuloModi.art_marca}>
+                <Select defaultValue={articuloModi.art_marca} placeholder="Seleccione una marca"
+                  showSearch
+                  optionFilterProp="children"
+                  filterOption={(input, option) => 
+                    option.children.toLowerCase().includes(input.toLowerCase())
+                  }>
                   {marcas.map(marca => (
                     <Option key={marca.mar_codigo} value={marca.mar_codigo}>{marca.mar_descripcion}</Option>
                   ))}
@@ -179,16 +196,16 @@ const CArticulos = () => {
             </Col>
             <Col span={24}>
               <Form.Item name="art_categoria" label="Categoría" rules={[{ required: true, message: 'Por favor, seleccione una categoría' }]}>
-                <Select defaultValue={articuloModi.art_categoria}>
+                <Select defaultValue={articuloModi.art_categoria} placeholder="Seleccione una categoría"
+                  showSearch
+                  optionFilterProp="children"
+                  filterOption={(input, option) => 
+                    option.children.toLowerCase().includes(input.toLowerCase())
+                  }>
                   {categorias.map(categoria => (
                     <Option key={categoria.cat_codigo} value={categoria.cat_codigo}>{categoria.cat_descripcion}</Option>
                   ))}
                 </Select>
-              </Form.Item>
-            </Col>
-            <Col span={24}>
-              <Form.Item name="art_precio" label="Precio" rules={[{ required: true, message: 'Por favor, ingrese el precio' }]}>
-                <Input type="number" defaultValue={articuloModi.art_precio} />
               </Form.Item>
             </Col>
           </Row>

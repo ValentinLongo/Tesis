@@ -169,7 +169,7 @@ const CMarcas = () => {
     };
 
     const modificarMarca = () => {
-        const url = "https://apis-node.vercel.app/marca/" + marCodigo; 
+        const url = `${process.env.REACT_APP_API_URL}marca/` + marCodigo; 
         // Realizar la solicitud POST y obtener la respuesta
         console.log(JSON.stringify(mapValuesToApi(marcaModi)));
         fetch(url, {
@@ -196,7 +196,7 @@ const CMarcas = () => {
     };
 
     const eliminarMarca = (record) => {
-        fetch(`https://apis-node.vercel.app/marca/${record.mar_codigo}`, {
+        fetch(`${process.env.REACT_APP_API_URL}marca/${record.mar_codigo}`, {
         method: 'DELETE',
         headers: {
           'Content-Type': 'application/json'

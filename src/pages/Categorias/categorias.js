@@ -30,7 +30,7 @@ const CCategorias = () => {
   };
 
   const datosCategorias = () => {
-    fetch('https://apis-node.vercel.app/categoria')
+    fetch(`${process.env.REACT_APP_API_URL}categoria`)
       .then(response => response.json())
       .then(data => {
         setDataCategoria(data.data || []); // Asegúrate de manejar data.data correctamente
@@ -84,7 +84,7 @@ const CCategorias = () => {
   };
 
   const modificarCategoria = () => {
-    const url = "https://apis-node.vercel.app/categoria/" + catCodigo;
+    const url =  `${process.env.REACT_APP_API_URL}categoria/` + catCodigo;
     fetch(url, {
       method: "PUT",
       body: JSON.stringify(mapValuesToApi(categoriaModi)),
@@ -106,7 +106,7 @@ const CCategorias = () => {
   };
 
   const eliminarCategoria = (record) => {
-    fetch(`https://apis-node.vercel.app/categoria/${record.cat_codigo}`, {
+    fetch(`${process.env.REACT_APP_API_URL}categoria/${record.cat_codigo}`, {
       method: 'DELETE',
       headers: {
         'Content-Type': 'application/json'

@@ -13,7 +13,7 @@ const AgregarServicio = ({ drawerAgregarServicio, cerrarDrawerAgregarServicio, d
   const { formValues, setFormValues } = useContext(loginContext);
 
   const agregarServicio = () => {
-    const url = "https://apis-node.vercel.app/servicio";
+    const url = `${process.env.REACT_APP_API_URL}servicio`;
     fetch(url, {
       method: "POST",
       body: JSON.stringify(mapValuesToApi(formValues)),

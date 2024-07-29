@@ -5,12 +5,10 @@ import { loginContext } from '../Context/loginContext';
 const { Option } = Select;
 
 const mapValuesToApi = (values) => {
-    console.log('valores', values)
   return {
     art_nombre: values.nombre,
     art_marca: values.marca,
-    art_categoria: values.categoria,
-    art_precio: values.precio,
+    art_categoria: values.categoria
   };
 };
 
@@ -20,20 +18,20 @@ const AgregarArticulo = ({ drawerAgregarArticulo, cerrarDrawerAgregarArticulo, d
   const [categorias, setCategorias] = useState([]);
 
   useEffect(() => {
-    fetch('https://apis-node.vercel.app/marca')
+    console.log(`${process.env.REACT_APP_API_URL}marca`);
+    fetch(`${process.env.REACT_APP_API_URL}marca`)
       .then(response => response.json())
       .then(data => setMarcas(data.data || []))
       .catch(error => console.error('Error fetching marcas:', error));
 
-    fetch('https://apis-node.vercel.app/categoria')
+    fetch(`${process.env.REACT_APP_API_URL}categoria`)
       .then(response => response.json())
       .then(data => setCategorias(data.data || []))
       .catch(error => console.error('Error fetching categorias:', error));
   }, []);
 
   const agregarArticulo = () => {
-    const url = "https://apis-node.vercel.app/articulo";
-    console.log(JSON.stringify(mapValuesToApi(formValues)))
+    const url = `${process.env.REACT_APP_API_URL}articulo`;
     fetch(url, {
       method: "POST",
       body: JSON.stringify(mapValuesToApi(formValues)),
@@ -76,7 +74,13 @@ const AgregarArticulo = ({ drawerAgregarArticulo, cerrarDrawerAgregarArticulo, d
           </Col>
           <Col span={24}>
             <Form.Item name="marca" label="Marca" rules={[{ required: true, message: 'Por favor, seleccione una marca' }]}>
-              <Select placeholder="Seleccione una marca">
+              <Select 
+                placeholder="Seleccione una marca"
+                showSearch
+                filterOption={(input, option) => 
+                  option.children.toLowerCase().includes(input.toLowerCase())
+                }
+              >
                 {marcas.map(marca => (
                   <Option key={marca.mar_codigo} value={marca.mar_codigo}>{marca.mar_descripcion}</Option>
                 ))}
@@ -85,16 +89,17 @@ const AgregarArticulo = ({ drawerAgregarArticulo, cerrarDrawerAgregarArticulo, d
           </Col>
           <Col span={24}>
             <Form.Item name="categoria" label="Categoria" rules={[{ required: true, message: 'Por favor, seleccione una categoría' }]}>
-              <Select placeholder="Seleccione una categoría">
+              <Select 
+                placeholder="Seleccione una categoría"
+                showSearch
+                filterOption={(input, option) => 
+                  option.children.toLowerCase().includes(input.toLowerCase())
+                }
+              >
                 {categorias.map(categoria => (
                   <Option key={categoria.cat_codigo} value={categoria.cat_codigo}>{categoria.cat_descripcion}</Option>
                 ))}
               </Select>
-            </Form.Item>
-          </Col>
-          <Col span={24}>
-            <Form.Item name="precio" label="Precio" rules={[{ required: true, message: 'Por favor, ingrese el precio' }]}>
-              <Input type="number" placeholder='Ingrese el precio del artículo' />
             </Form.Item>
           </Col>
         </Row>

@@ -13,7 +13,7 @@ const AgregarMarca = () =>{
     const { datosMarcas, formValues,setFormValues, drawerAgMarca,cerrarDrawerMarca} = useContext(loginContext);
 
     const agregarMarca = () => {
-    const url = "https://apis-node.vercel.app/marca"; 
+    const url = `${process.env.REACT_APP_API_URL}marca`; 
     // Realizar la solicitud POST y obtener la respuesta
     console.log(JSON.stringify(mapValuesToApi(formValues)));
     fetch(url, {

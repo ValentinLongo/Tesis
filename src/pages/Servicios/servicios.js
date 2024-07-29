@@ -28,7 +28,7 @@ const CServicios = () => {
   };
 
   const datosServicios = () => {
-    fetch('https://apis-node.vercel.app/servicio')
+    fetch(`${process.env.REACT_APP_API_URL}servicio`)
       .then(response => response.json())
       .then(data => {
         setDataServicio(data.data || []);
@@ -88,7 +88,7 @@ const CServicios = () => {
   };
 
   const modificarServicio = () => {
-    const url = "https://apis-node.vercel.app/servicio/" + serCodigo;
+    const url = `${process.env.REACT_APP_API_URL}servicio/` + serCodigo;
     fetch(url, {
       method: "PUT",
       body: JSON.stringify(mapValuesToApi(servicioModi)),
@@ -110,7 +110,7 @@ const CServicios = () => {
   };
 
   const eliminarServicio = (record) => {
-    fetch(`https://apis-node.vercel.app/servicio/${record.ser_codigo}`, {
+    fetch( `${process.env.REACT_APP_API_URL}servicio/${record.ser_codigo}`, {
       method: 'DELETE',
       headers: {
         'Content-Type': 'application/json'

@@ -13,7 +13,7 @@ const AgregarCategoria = ({ drawerAgregarCategoria, cerrarDrawerAgregarCategoria
   const { formValues, setFormValues } = useContext(loginContext);
 
   const agregarCategoria = () => {
-    const url = "https://apis-node.vercel.app/categoria";
+    const url = `${process.env.REACT_APP_API_URL}categoria`;
     // Realizar la solicitud POST y obtener la respuesta
     console.log(JSON.stringify(mapValuesToApi(formValues)));
     fetch(url, {

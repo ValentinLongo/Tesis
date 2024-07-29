@@ -25,7 +25,7 @@ const AgregarUsuario = () =>{
     const { datos, open,onClose, formValues,setFormValues} = useContext(loginContext);
 
     const agregarUsuario = () => {
-    const url = "https://apis-node.vercel.app/usuarios"; 
+    const url = `${process.env.REACT_APP_API_URL}usuarios`; 
     // Realizar la solicitud POST y obtener la respuesta
     console.log(JSON.stringify(mapValuesToApi(formValues)));
     fetch(url, {

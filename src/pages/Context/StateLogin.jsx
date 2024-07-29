@@ -10,7 +10,7 @@ const [hasError, setHasError] = useState(false);
 const [formValues, setFormValues] = useState({});
 
 const hacerLogin = (usuario, contra) => {
-  const url = "https://apis-node.vercel.app/usuarios/login";
+  const url = `${process.env.REACT_APP_API_URL}usuarios/login`;
   const data = { usu_nombre: usuario, usu_contra: contra };
   console.log(data);
   
@@ -55,7 +55,7 @@ const [open2, setOpen2] = useState(false);
 const [modificarUsuario, setModificarUsuario] = useState({});
 
 const datos = () =>{    
-  fetch('https://apis-node.vercel.app/usuarios')
+  fetch(`${process.env.REACT_APP_API_URL}usuarios`)
   .then(response => response.json())
   .then(data => setData(data.data))
   .catch(error => console.error(error)) 
@@ -80,14 +80,7 @@ const onClose2 = () => {
 };
 
 //-----------PEDIDOS-----------
-const [drawerVisible, setDrawerVisible] = useState(false);
-const buscarArticuloDrawer = () => {
-  setDrawerVisible(true);
-};
 
-const cerrarBuscarArticuloDrawer = () => {
-  setDrawerVisible(false);
-};
 
 //-----------CATEGORIAS-----------
 const [dataCategoria,setDataCategoria] = useState('');
@@ -102,7 +95,7 @@ const cerrarDrawerCategoria = () =>{
 }
 
 const datosCategorias = () => {
-  fetch('https://apis-node.vercel.app/categoria')
+  fetch(`${process.env.REACT_APP_API_URL}categoria`)
     .then(response => response.json())
     .then(data => setDataCategoria(data.data))
     .catch(error => console.error(error));
@@ -118,7 +111,7 @@ const [dataMarca,setDataMarca] = useState('');
 const [drawerAgMarca, setDrawerAgMarca] = useState(false);
 
 const datosMarcas = () => {
-  fetch('https://apis-node.vercel.app/marca')
+  fetch(`${process.env.REACT_APP_API_URL}marca`)
     .then(response => response.json())
     .then(data => setDataMarca(data.data))
     .catch(error => console.error(error));
@@ -149,7 +142,7 @@ const cerrarDrawerArticulo = () =>{
 }
 
 const datosArticulos = () => {
-  fetch('https://apis-node.vercel.app/articulo')
+  fetch(`${process.env.REACT_APP_API_URL}articulo`)
     .then(response => response.json())
     .then(data => setDataArticulo(data.data))
     .catch(error => console.error(error));
@@ -181,9 +174,6 @@ return(
         setFormValues,
         modificarUsuario,
         setModificarUsuario,
-        buscarArticuloDrawer,
-        cerrarBuscarArticuloDrawer,
-        drawerVisible,
         dataMarca,
         datosMarcas,
         drawerAgMarca,
