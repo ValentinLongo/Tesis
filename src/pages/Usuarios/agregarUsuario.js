@@ -17,7 +17,8 @@ const mapValuesToApi = (values) => {
     usu_contra: values.contra,
     usu_email: values.email,
     usu_telefono: values.telefono,
-    usu_permiso: usu_permiso
+    usu_permiso: usu_permiso,
+    usu_dni: values.dni
   };
 };
 
@@ -92,6 +93,13 @@ const AgregarUsuario = () =>{
             <Col span={24}>
                 <Form.Item name="email" label="Email" rules={[{ required: true, message: 'Porfavor, ingrese email'}]}>
                 <Input placeholder='Ingrese email'/>
+                </Form.Item>
+            </Col>
+            </Row>
+            <Row gutter={16}>
+            <Col span={24}>
+                <Form.Item name="dni" label="DNI" rules={[{ required: true, message: 'Porfavor, ingrese DNI'}]}>
+                <Input placeholder='Ingrese DNI'/>
                 </Form.Item>
             </Col>
             </Row>

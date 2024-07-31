@@ -32,9 +32,9 @@ const NuevoPedido = () => {
   };
 
   return (
-    <Row justify="center" align="middle" style={{ minHeight: '60vh' }}>
-      <Col xs={24} sm={20} md={16} lg={12} xl={8}>
-        <div style={{ padding: '20px', backgroundColor: '#fff', boxShadow: '0 0 10px rgba(0, 0, 0, 0.1)', borderRadius: '8px' }}>
+    <Row justify="center" align="middle" style={{ minHeight: '80vh' }}>
+      <Col xs={24} sm={22} md={20} lg={18} xl={16}>
+        <div style={{ padding: '10px', backgroundColor: '#fff', boxShadow: '0 0 10px rgba(0, 0, 0, 0.1)', borderRadius: '8px' }}>
           {renderStep()}
         </div>
       </Col>

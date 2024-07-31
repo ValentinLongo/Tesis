@@ -80,7 +80,18 @@ const onClose2 = () => {
 };
 
 //-----------PEDIDOS-----------
+const [pedido, setPedido] = useState({
+  cliente: null,
+  articulos: [],
+  servicios: []
+});
 
+const actualizarPedido = (nuevoPedido) => {
+  setPedido(prevState => ({
+      ...prevState,
+      ...nuevoPedido
+  }));
+};
 
 //-----------CATEGORIAS-----------
 const [dataCategoria,setDataCategoria] = useState('');
@@ -186,7 +197,9 @@ return(
         drawerAgArticulo,
         abrirDrawerArticulo,
         cerrarDrawerArticulo,
-        datosArticulos
+        datosArticulos,
+        pedido,
+        actualizarPedido
     }}
     >
         {children}
