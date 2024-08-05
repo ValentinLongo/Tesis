@@ -1,26 +1,65 @@
 import React, { useContext, useState, useEffect } from 'react';
-import { Button, Table, Input, Row, Col, Typography } from 'antd';
+import { Button, Table, Input, Row, Col, Typography,notification } from 'antd';
 import { loginContext } from '../../Context/loginContext';
 
 const { TextArea } = Input;
 const { Title, Text } = Typography;
 
 const Step4 = ({ prevStep }) => {
-  const { pedido } = useContext(loginContext);
+  const { pedido, actualizarPedido } = useContext(loginContext);
   const [observaciones, setObservaciones] = useState('');
   const [totalServicios, setTotalServicios] = useState(0);
+  const [adicionales, setAdicionales] = useState([]);
+  const [descripcion, setDescripcion] = useState('');
+  const [precio, setPrecio] = useState('');
 
   useEffect(() => {
-    const total = pedido.servicios.reduce((sum, servicio) => sum + servicio.ser_total, 0);
-    setTotalServicios(total);
-  }, [pedido.servicios]);
+    const totalServicios = pedido.servicios.reduce((sum, servicio) => sum + servicio.ser_total, 0);
+    const totalAdicionales = adicionales.reduce((sum, adicional) => sum + parseFloat(adicional.precio || 0), 0);
+    setTotalServicios(totalServicios + totalAdicionales);
+  }, [pedido.servicios, adicionales]);
 
-  const handleFinish = () => {
+  const handleFinish = async () => {
     const pedidoConObservaciones = {
       ...pedido,
       observaciones,
+      adicionales
     };
-    console.log('Pedido:', pedidoConObservaciones);
+    console.log('Pedido',pedidoConObservaciones);
+    try {
+      const response = await fetch(`${process.env.REACT_APP_API_URL}pedidos`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(pedidoConObservaciones),
+      });
+
+      if (!response.ok) {
+        throw new Error('Error en la solicitud');
+      }
+
+      const data = await response.json();
+      notification.success({
+        message: 'Pedido creado con éxito',
+        description: 'El pedido ha sido creado correctamente.',
+      });
+
+      actualizarPedido(data);
+    } catch (error) {
+      notification.error({
+        message: 'Error al crear el pedido',
+        description: error.message,
+      });
+    }
+  };
+
+  const handleAddAdicional = () => {
+    if (descripcion && precio) {
+      setAdicionales([...adicionales, { descripcion, precio: parseFloat(precio) }]);
+      setDescripcion('');
+      setPrecio('');
+    }
   };
 
   const clienteColumns = [
@@ -92,11 +131,24 @@ const Step4 = ({ prevStep }) => {
     },
   ];
 
+  const adicionalColumns = [
+    {
+      title: 'Descripción',
+      dataIndex: 'descripcion',
+      key: 'descripcion',
+    },
+    {
+      title: 'Precio',
+      dataIndex: 'precio',
+      key: 'precio',
+    },
+  ];
+
   return (
     <div>
       <Title style={{ textAlign: 'center' }}>Resumen del Pedido</Title>
-      
-      <h2 style={{marginBottom:'10px'}}>Cliente</h2>
+
+      <h2 style={{ marginBottom: '10px' }}>Cliente</h2>
       <Table
         columns={clienteColumns}
         dataSource={[pedido.cliente]}
@@ -105,7 +157,7 @@ const Step4 = ({ prevStep }) => {
         bordered
       />
 
-      <h2 style={{marginBottom:'10px', marginTop:'20px'}}>Artículos</h2>
+      <h2 style={{ marginBottom: '10px', marginTop: '20px' }}>Artículos</h2>
       <Table
         columns={articuloColumns}
         dataSource={pedido.articulos}
@@ -114,7 +166,7 @@ const Step4 = ({ prevStep }) => {
         bordered
       />
 
-      <h2 style={{marginBottom:'10px', marginTop:'20px'}}>Servicios</h2>
+      <h2 style={{ marginBottom: '10px', marginTop: '20px' }}>Servicios</h2>
       <Table
         columns={servicioColumns}
         dataSource={pedido.servicios}
@@ -123,9 +175,41 @@ const Step4 = ({ prevStep }) => {
         bordered
       />
 
-      <Row justify="center" style={{ marginBottom: '20px', textAlign: 'left' }}>
+      <h2 style={{ marginBottom: '10px', marginTop: '20px' }}>Adicionales</h2>
+      <Row style={{ marginBottom: '20px', textAlign: 'left', justifyContent: 'start' }}>
+        <Col span={10}>
+          <Input
+            placeholder="Descripción"
+            value={descripcion}
+            onChange={(e) => setDescripcion(e.target.value)}
+          />
+        </Col>
+        <Col span={6}>
+          <Input
+            placeholder="Precio"
+            value={precio}
+            onChange={(e) => setPrecio(e.target.value)}
+            type="number"
+          />
+        </Col>
+        <Col span={4}>
+          <Button type="primary" onClick={handleAddAdicional}>
+            Añadir
+          </Button>
+        </Col>
+      </Row>
+      <Table
+        columns={adicionalColumns}
+        dataSource={adicionales}
+        pagination={{ pageSize: 5 }}
+        rowKey="descripcion"
+        bordered
+      />
+
+
+      <Row justify="center" style={{ marginBottom: '20px', textAlign: 'left', justifyContent: 'start' }}>
         <Col span={16}>
-          <TextArea 
+          <TextArea
             placeholder="Observaciones"
             value={observaciones}
             onChange={(e) => setObservaciones(e.target.value)}
@@ -134,15 +218,12 @@ const Step4 = ({ prevStep }) => {
         </Col>
       </Row>
 
-      <Row justify="center" style={{ marginBottom: '20px', textAlign: 'left' }}>
+      <Row justify="center" style={{ marginBottom: '20px', textAlign: 'left',justifyContent: 'start' }}>
         <Col span={16}>
-          <Text strong>Total de Servicios:</Text>
-          <div style={{ padding: '8px 0', fontSize: '16px' }}>
-            {totalServicios}
-          </div>
+          <Text strong style={{fontSize:30}}>Total de Servicios:{totalServicios}</Text>
         </Col>
       </Row>
-      
+
       <div style={{ marginTop: '20px', textAlign: 'center' }}>
         <Button onClick={prevStep} style={{ marginRight: '10px' }}>
           Atrás

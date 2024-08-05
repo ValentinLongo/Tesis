@@ -83,7 +83,9 @@ const onClose2 = () => {
 const [pedido, setPedido] = useState({
   cliente: null,
   articulos: [],
-  servicios: []
+  servicios: [],
+  adicionales:[],
+  observaciones:null
 });
 
 const actualizarPedido = (nuevoPedido) => {
