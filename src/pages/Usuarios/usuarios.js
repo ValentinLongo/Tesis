@@ -7,7 +7,7 @@ import { loginContext } from '../Context/loginContext';
 import AgregarUsuario from './agregarUsuario';
 
 const CUsuarios = () => {
-  const { data, datos, open2, showDrawer, showDrawer2, onClose, onClose2 } = useContext(loginContext);
+  const { data, datos, open, open2, showDrawer, showDrawer2, onClose, onClose2 } = useContext(loginContext);
   const [modificarUsuario, setModificarUsuario] = useState({});
   const [searchText, setSearchText] = useState('');
   const [searchedColumn, setSearchedColumn] = useState('');
@@ -175,10 +175,11 @@ const CUsuarios = () => {
   //Le paso el id de permiso y me devuelve el nombre
   const definirTipoUsuario = (values) => {
     let usu_permiso = "";
-    if (values === "1") {
+    console.log(values);
+    if (values === 1) {
       usu_permiso = "Cliente";
     }
-    else if (values === "2") {
+    else if (values === 2) {
       usu_permiso = "Administrador";
     }
     return usu_permiso
@@ -264,14 +265,19 @@ const CUsuarios = () => {
 
   return (
     <div style={{ padding: '24px' }}>
+      <Space style={{ marginBottom: 16 }}>
+        <Button type="primary" onClick={showDrawer}>
+          Agregar Usuario
+        </Button>
+      </Space>
       <AgregarUsuario />
 
-      <Drawer title="Modificar Usuario" width={500} placement="right" onClose={() => { onClose2() }} open={open2}
+      <Drawer title="Modificar Usuario" width={500} placement="right" onClose={onClose2} open={open2}
         destroyOnClose="true"
         extra={
           <Space>
             <Button onClick={onClose2}>Cancelar</Button>
-            <Button onClick={() => { modificarUsu() }} type="primary">
+            <Button onClick={modificarUsu} type="primary">
               Aceptar
             </Button>
           </Space>}>
@@ -283,15 +289,15 @@ const CUsuarios = () => {
               </Form.Item>
             </Col>
             <Col span={12}>
-              <Form.Item name="usu_contra" label="Contraseña" type="password" rules={[{ required: true, message: 'Por favor, ingrese contraseña' }]}>
-                <Input.Password defaultValue={modificarUsuario.usu_contra} placeholder='Ingrese contraseña ' />
+              <Form.Item name="usu_email" label="Email" rules={[{ required: true, message: 'Por favor, ingrese email' }]}>
+                <Input defaultValue={modificarUsuario.usu_email} />
               </Form.Item>
             </Col>
           </Row>
           <Row gutter={14}>
             <Col span={12}>
-              <Form.Item name="usu_email" label="Email" rules={[{ required: true, message: 'Por favor, ingrese email' }]}>
-                <Input defaultValue={modificarUsuario.usu_email} />
+              <Form.Item name="usu_dni" label="DNI" rules={[{ required: true, message: 'Por favor, ingrese DNI' }]}>
+                <Input defaultValue={modificarUsuario.usu_dni} />
               </Form.Item>
             </Col>
             <Col span={12}>
@@ -302,26 +308,22 @@ const CUsuarios = () => {
           </Row>
           <Row gutter={14}>
             <Col span={12}>
-              <Form.Item name="usu_permiso" label="Permiso" rules={[{ required: true, message: 'Por favor, ingrese permiso' }]}>
-                <Select defaultValue={modificarUsuario.usu_permiso}>
+              <Form.Item name="usu_contra" label="Contraseña" rules={[{ required: true, message: 'Por favor, ingrese contraseña' }]}>
+                <Input defaultValue={modificarUsuario.usu_contra} />
+              </Form.Item>
+            </Col>
+            <Col span={12}>
+              <Form.Item name="usu_permiso" label="Tipo de Usuario" rules={[{ required: true, message: 'Por favor, seleccione un tipo de usuario' }]}>
+                <Select defaultValue={definirTipoUsuario(modificarUsuario.usu_permiso)} >
                   <Option value="Cliente">Cliente</Option>
                   <Option value="Administrador">Administrador</Option>
                 </Select>
               </Form.Item>
             </Col>
-            <Col span={12}>
-              <Form.Item name="usu_dni" label="DNI" rules={[{ required: true, message: 'Por favor, ingrese DNI' }]}>
-                <Input defaultValue={modificarUsuario.usu_dni} />
-              </Form.Item>
-            </Col>
           </Row>
         </Form>
       </Drawer>
-      <Table
-        columns={columns}
-        dataSource={data}
-        rowKey="usu_codigo"
-      />
+      <Table columns={columns} dataSource={data} rowKey="usu_codigo" />
     </div>
   );
 };

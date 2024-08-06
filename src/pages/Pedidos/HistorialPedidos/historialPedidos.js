@@ -27,6 +27,13 @@ const HistorialPedidos = () => {
         setSearchText('');
     };
 
+    const getDetallePedido = (id) =>{
+        fetch(`${process.env.REACT_APP_API_URL}pedidos/${id}`)
+            .then(response => response.json())
+            .then(data => console.log('detallepedido', data.data))
+            .catch(error => console.error('Error fetching pedidos:', error));
+    }
+
     const getColumnSearchProps = (dataIndex) => ({
         filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters, close }) => (
             <div
@@ -165,7 +172,7 @@ const HistorialPedidos = () => {
             key: 'acciones',
             render: (_, record) => (
                 <Space size="middle">
-                    <Button onClick={() => console.log(record.ped_codigo)}>Ver Detalle</Button>
+                    <Button onClick={() => getDetallePedido(record.ped_codigo)}>Ver Detalle</Button>
                 </Space>
             ),
         },
