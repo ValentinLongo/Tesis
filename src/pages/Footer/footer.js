@@ -8,7 +8,7 @@ function footer() {
       textAlign: 'center'
     }}
   >
-    Valentin Longo ©2023 Tesis Proyect
+    Valentin Longo ©2024 Tesis Proyect
   </Footer>
   );
 }

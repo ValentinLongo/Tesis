@@ -44,8 +44,8 @@ const CHeader = () => {
   ];
 
   return (
-    <Header style={{ height: '30px', padding: '0px 0px 0px 20px' }}>
-      <Menu theme="dark" mode="horizontal" defaultSelectedKeys={['1']} style={{ height: '30px' }}>
+    <Header style={{ padding: '0 20px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', height: '30px' }}>
+      <Menu theme="dark" mode="horizontal" defaultSelectedKeys={['1']} style={{ flex: 1, lineHeight: '30px' }}>
         {items.map((item, index) =>
           item.children ? (
             <Menu.SubMenu key={index + 1} title={item.name} style={{ lineHeight: '30px' }}>
@@ -65,6 +65,8 @@ const CHeader = () => {
             </Menu.Item>
           )
         )}
+      </Menu>
+      <Menu theme="dark" mode="horizontal" style={{ lineHeight: '30px', borderBottom: 'none' }}>
         <Menu.Item style={{ lineHeight: '30px' }}>
           <a onClick={showConfirm}>Cerrar Sesión</a>
         </Menu.Item>

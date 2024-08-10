@@ -18,7 +18,7 @@ const HistorialPedidos = () => {
             .then(response => response.json())
             .then(data => setPedidos(data.data))
             .catch(error => console.error('Error fetching pedidos:', error));
-        
+        console.log(pedidos);
         // Fetch estados
         fetch(`${process.env.REACT_APP_API_URL}estados`)
             .then(response => response.json())
