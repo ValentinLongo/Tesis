@@ -1,7 +1,8 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Table, Button, Input, Space, Select } from 'antd';
+import { Table, Button, Input, Space, Select, Modal } from 'antd';
 import { SearchOutlined } from '@ant-design/icons';
 import Highlighter from 'react-highlight-words';
+import DetallePedido from './detallePedido'; // Asegúrate de importar tu componente DetallePedido
 
 const { Option } = Select;
 
@@ -11,6 +12,8 @@ const HistorialPedidos = () => {
     const [searchText, setSearchText] = useState('');
     const [searchedColumn, setSearchedColumn] = useState('');
     const searchInput = useRef(null);
+    const [detallePedido, setDetallePedido] = useState(null);
+    const [isDetalleVisible, setIsDetalleVisible] = useState(false); // Estado para manejar la visibilidad del detalle
 
     useEffect(() => {
         // Fetch pedidos
@@ -18,7 +21,7 @@ const HistorialPedidos = () => {
             .then(response => response.json())
             .then(data => setPedidos(data.data))
             .catch(error => console.error('Error fetching pedidos:', error));
-        console.log(pedidos);
+
         // Fetch estados
         fetch(`${process.env.REACT_APP_API_URL}estados`)
             .then(response => response.json())
@@ -40,21 +43,20 @@ const HistorialPedidos = () => {
     const getDetallePedido = (id) => {
         fetch(`${process.env.REACT_APP_API_URL}pedidos/${id}`)
             .then(response => response.json())
-            .then(data => console.log('detallepedido', data.data))
+            .then(data => {
+                setDetallePedido(data.data);
+                setIsDetalleVisible(true); // Muestra el detalle del pedido
+            })
             .catch(error => console.error('Error fetching pedidos:', error));
     };
 
     const handleChangeEstado = (pedidoId, estadoId) => {
-        console.log(pedidoId,estadoId);
         fetch(`${process.env.REACT_APP_API_URL}estados/cambiarEstado`, {
             method: 'PUT',
             headers: {
                 'Content-Type': 'application/json',
             },
-            body: JSON.stringify({
-                pedidoId, // Cambiado a nombre en formato camelCase
-                estadoId, // Cambiado a nombre en formato camelCase
-            }),
+            body: JSON.stringify({ pedidoId, estadoId }),
         })
             .then(response => response.json())
             .then(() => {
@@ -207,6 +209,17 @@ const HistorialPedidos = () => {
     return (
         <div style={{ padding: 20 }}>
             <Table columns={columns} dataSource={pedidos} rowKey="ped_codigo" />
+
+            {/* Modal para mostrar el DetallePedido */}
+            <Modal
+                title="Detalle del Pedido"
+                visible={isDetalleVisible}
+                onCancel={() => setIsDetalleVisible(false)}
+                footer={null}
+                width={800}
+            >
+                {detallePedido && <DetallePedido detalle={detallePedido} />}
+            </Modal>
         </div>
     );
 };
