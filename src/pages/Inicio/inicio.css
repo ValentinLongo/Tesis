@@ -1,35 +1,58 @@
 .inicioContainer {
-    display: flex;
-    justify-content: space-around;
-    padding-top: 30px;
-    height: 525px;
-  }
-  
-  .statusBox {
-    width: 300px;
-    height: 110px;
-    border-radius: 10px;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    font-family: Arial, sans-serif;
-    color: white;
-    font-size: 1.0em;
-  }
-  
-  .pendiente {
-    background-color: #f39c12;
-  }
-  
-  .preparacion {
-    background-color: #e67e22;
-  }
-  
-  .finalizado {
-    background-color: #2ecc71;
-  }
-  
-  .numeroCount{
-    font-size: 30px;
-  }
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding-top: 30px;
+}
+
+.statusContainer {
+  display: flex;
+  justify-content: space-around;
+  width: 100%;
+  max-width: 1200px;
+  padding-top: 30px;
+}
+
+.statusBox {
+  width: 300px;
+  height: 110px;
+  border-radius: 10px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  font-family: Arial, sans-serif;
+  color: white;
+  font-size: 1.0em;
+}
+
+.pendiente {
+  background-color: #f39c12;
+}
+
+.preparacion {
+  background-color: #e67e22;
+}
+
+.finalizado {
+  background-color: #2ecc71;
+}
+
+.numeroCount {
+  font-size: 30px;
+}
+
+.chartContainer {
+  margin-top: 20px;
+  padding: 20px;
+  background-color: white;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  width: 80%;
+  max-width: 800px;
+}
+
+.chartContainer h2 {
+  text-align: center;
+  margin-bottom: 20px;
+}

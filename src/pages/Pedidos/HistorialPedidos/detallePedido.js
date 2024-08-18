@@ -1,16 +1,62 @@
 import React, { useState, useEffect } from 'react';
-import { Button, Table, Typography, Row, Col } from 'antd';
+import { Button, Table, Typography, Row, Col, Input, Form, notification } from 'antd';
+import axios from 'axios';
 
 const { Title, Text } = Typography;
 
 const DetallePedido = ({ detalle }) => {
     const [totalServicios, setTotalServicios] = useState(0);
+    const [nuevosAdicionales, setNuevosAdicionales] = useState([]);
+    const [descripcion, setDescripcion] = useState('');
+    const [precio, setPrecio] = useState('');
 
     useEffect(() => {
         const total = detalle.servicios.reduce((sum, servicio) => sum + servicio.ser_total, 0);
         const adicionalesTotal = detalle.adicionales.reduce((sum, adicional) => sum + adicional.precio, 0);
         setTotalServicios(total + adicionalesTotal);
     }, [detalle]);
+
+    const handleAgregarAdicional = () => {
+        if (descripcion && precio) {
+            const nuevoAdicional = { descripcion, precio: parseFloat(precio) };
+            setNuevosAdicionales([...nuevosAdicionales, nuevoAdicional]);
+            setDescripcion('');
+            setPrecio('');
+            setTotalServicios(totalServicios + parseFloat(precio));
+        } else {
+            notification.error({
+                message: 'Error',
+                description: 'Por favor ingresa una descripción y un precio válidos.',
+            });
+        }
+    };
+
+    const handleConfirmarAdicionales = () => {
+        if (nuevosAdicionales.length === 0) {
+            notification.info({
+                message: 'No hay adicionales nuevos',
+                description: 'No se han agregado nuevos adicionales para confirmar.',
+            });
+            return;
+        }
+    
+        axios.post(`${process.env.REACT_APP_API_URL}pedidos/${detalle.ped_codigo}/adicionales`, { adicionales: nuevosAdicionales })
+            .then(() => {
+                notification.success({
+                    message: 'Éxito',
+                    description: 'Adicionales agregados exitosamente.',
+                });
+                detalle.adicionales.push(...nuevosAdicionales);
+
+                setNuevosAdicionales([]);
+            })
+            .catch((err) => {
+                notification.error({
+                    message: 'Error',
+                    description: `Error al agregar los adicionales: ${err.message}`,
+                });
+            });
+    };
 
     const clienteColumns = [
         {
@@ -131,10 +177,39 @@ const DetallePedido = ({ detalle }) => {
                     <Title level={4}>Adicionales</Title>
                     <Table
                         columns={adicionalColumns}
-                        dataSource={detalle.adicionales}
+                        dataSource={[...detalle.adicionales, ...nuevosAdicionales]}
                         pagination={false}
                         rowKey={(record) => record.descripcion}
                     />
+                    <Form layout="inline" style={{ marginTop: 16 }}>
+                        <Form.Item>
+                            <Input
+                                placeholder="Descripción"
+                                value={descripcion}
+                                onChange={(e) => setDescripcion(e.target.value)}
+                            />
+                        </Form.Item>
+                        <Form.Item>
+                            <Input
+                                placeholder="Precio"
+                                type="number"
+                                value={precio}
+                                onChange={(e) => setPrecio(e.target.value)}
+                            />
+                        </Form.Item>
+                        <Form.Item>
+                            <Button type="primary" onClick={handleAgregarAdicional}>
+                                Agregar Adicional
+                            </Button>
+                        </Form.Item>
+                    </Form>
+                    <Button
+                        type="primary"
+                        style={{ marginTop: 16 }}
+                        onClick={handleConfirmarAdicionales}
+                    >
+                        Confirmar Adicionales
+                    </Button>
                 </Col>
                 <Col span={24}>
                     <Title level={4}>Observaciones</Title>

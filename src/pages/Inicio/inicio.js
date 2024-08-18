@@ -1,10 +1,16 @@
 import './inicio.css';
 import { useEffect, useState } from 'react';
+import { Bar } from 'react-chartjs-2';
+import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend } from 'chart.js';
+
+// Registra los componentes de Chart.js
+ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
 
 function Inicio() {
   const [pendienteCount, setPendienteCount] = useState(0);
   const [preparacionCount, setPreparacionCount] = useState(0);
   const [finalizadoCount, setFinalizadoCount] = useState(0);
+  const [articulosRepetidos, setArticulosRepetidos] = useState([]);
 
   useEffect(() => {
     fetch(`${process.env.REACT_APP_API_URL}pedidos`)
@@ -19,11 +25,32 @@ function Inicio() {
         setPreparacionCount(preparacion);
         setFinalizadoCount(finalizado);
       });
+
+    fetch(`${process.env.REACT_APP_API_URL}chart/marca/repeticiones`)
+      .then(response => response.json())
+      .then(data => {
+        setArticulosRepetidos(data.data);
+        console.log(data.data);
+      });
   }, []);
+
+  // Configuración de los datos para el gráfico de barras
+  const chartData = {
+    labels: articulosRepetidos.map(item => item.mar_descripcion),
+    datasets: [
+      {
+        label: 'Repeticiones por Marca',
+        data: articulosRepetidos.map(item => item.repeticiones),
+        backgroundColor: 'rgba(75, 192, 192, 0.6)',
+        borderColor: 'rgba(75, 192, 192, 1)',
+        borderWidth: 1,
+      },
+    ],
+  };
 
   return (
     <div className='todo'>
-      <div className="inicioContainer">
+      <div className="statusContainer">
         <div className="statusBox pendiente">
           <h2>Pendientes</h2>
           <p className="numeroCount">{pendienteCount}</p>
@@ -36,6 +63,10 @@ function Inicio() {
           <h2>Finalizados</h2>
           <p className="numeroCount">{finalizadoCount}</p>
         </div>
+      </div>
+      <div className="chartContainer">
+        <h2>Repeticiones por Marca</h2>
+        <Bar data={chartData} />
       </div>
     </div>
   );
