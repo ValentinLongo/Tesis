@@ -1,5 +1,5 @@
 import React, { useContext, useState, useEffect } from 'react';
-import { Button, Table, Input, Row, Col, Typography,notification } from 'antd';
+import { Button, Table, Input, Row, Col, Typography, notification } from 'antd';
 import { loginContext } from '../../Context/loginContext';
 
 const { TextArea } = Input;
@@ -14,18 +14,20 @@ const Step4 = ({ prevStep }) => {
   const [precio, setPrecio] = useState('');
 
   useEffect(() => {
-    const totalServicios = pedido.servicios.reduce((sum, servicio) => sum + servicio.ser_total, 0);
-    const totalAdicionales = adicionales.reduce((sum, adicional) => sum + parseFloat(adicional.precio || 0), 0);
-    setTotalServicios(totalServicios + totalAdicionales);
-  }, [pedido.servicios, adicionales]);
+    if (pedido) {
+      const totalServicios = pedido.servicios.reduce((sum, servicio) => sum + servicio.ser_total, 0);
+      const totalAdicionales = adicionales.reduce((sum, adicional) => sum + parseFloat(adicional.precio || 0), 0);
+      setTotalServicios(totalServicios + totalAdicionales);
+    }
+  }, [pedido, adicionales]);
 
   const handleFinish = async () => {
     const pedidoConObservaciones = {
       ...pedido,
       observaciones,
-      adicionales
+      adicionales,
     };
-    console.log('Pedido',pedidoConObservaciones);
+
     try {
       const response = await fetch(`${process.env.REACT_APP_API_URL}pedidos`, {
         method: 'POST',
@@ -44,8 +46,9 @@ const Step4 = ({ prevStep }) => {
         message: 'Pedido creado con éxito',
         description: 'El pedido ha sido creado correctamente.',
       });
-
-      actualizarPedido(data);
+      console.log('api', data.data);
+      actualizarPedido(data.data);
+      printTicket(data.data); // Imprimir el ticket después de finalizar
     } catch (error) {
       notification.error({
         message: 'Error al crear el pedido',
@@ -144,6 +147,34 @@ const Step4 = ({ prevStep }) => {
     },
   ];
 
+  const printTicket = (pedido) => {
+    const ticketWindow = window.open('', 'PRINT', 'height=600,width=800');
+    ticketWindow.document.write('<html><head><title>Ticket de Pedido</title>');
+    ticketWindow.document.write('</head><body>');
+    ticketWindow.document.write('<h1>Ticket de Pedido</h1>');
+    ticketWindow.document.write(`<p><strong>Código de Pedido:</strong> ${pedido.ped_codigo}</p>`);
+    ticketWindow.document.write('<h2>Cliente</h2>');
+    ticketWindow.document.write(`<p>${pedido.cliente.usu_nombre} (DNI: ${pedido.cliente.usu_dni})</p>`);
+    ticketWindow.document.write('<h2>Artículos</h2>');
+    pedido.articulos.forEach(articulo => {
+      ticketWindow.document.write(`<p>${articulo.art_nombre} - ${articulo.mar_descripcion} (${articulo.cat_descripcion})</p>`);
+    });
+    ticketWindow.document.write('<h2>Servicios</h2>');
+    pedido.servicios.forEach(servicio => {
+      ticketWindow.document.write(`<p>${servicio.ser_descripcion} - $${servicio.ser_total}</p>`);
+    });
+    ticketWindow.document.write('</body></html>');
+    ticketWindow.document.close();
+    ticketWindow.focus();
+    ticketWindow.print();
+    ticketWindow.close();
+  };
+
+  // Chequeo para manejar caso cuando `pedido` aún no está disponible
+  if (!pedido) {
+    return <div>Cargando...</div>;
+  }
+
   return (
     <div>
       <Title style={{ textAlign: 'center' }}>Resumen del Pedido</Title>
@@ -206,7 +237,6 @@ const Step4 = ({ prevStep }) => {
         bordered
       />
 
-
       <Row justify="center" style={{ marginBottom: '20px', textAlign: 'left', justifyContent: 'start' }}>
         <Col span={16}>
           <TextArea
@@ -218,9 +248,9 @@ const Step4 = ({ prevStep }) => {
         </Col>
       </Row>
 
-      <Row justify="center" style={{ marginBottom: '20px', textAlign: 'left',justifyContent: 'start' }}>
+      <Row justify="center" style={{ marginBottom: '20px', textAlign: 'left', justifyContent: 'start' }}>
         <Col span={16}>
-          <Text strong style={{fontSize:30}}>Total de Servicios:{totalServicios}</Text>
+          <Text strong style={{ fontSize: 30 }}>Total de Servicios: ${totalServicios}</Text>
         </Col>
       </Row>
 
