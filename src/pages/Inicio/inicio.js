@@ -1,10 +1,10 @@
 import './inicio.css';
 import { useCallback, useEffect, useState } from 'react';
-import { Bar } from 'react-chartjs-2';
-import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend } from 'chart.js';
+import { Bar, Pie } from 'react-chartjs-2';
+import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend,ArcElement } from 'chart.js';
 
 // Registra los componentes de Chart.js
-ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
+ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend, ArcElement);
 
 function Inicio() {
   const [pendienteCount, setPendienteCount] = useState(0);
@@ -81,6 +81,25 @@ function Inicio() {
     ],
   };
 
+  const pieData = {
+    labels: ['Pendiente', 'Preparación', 'Finalizado'],
+    datasets: [
+      {
+        data: [pendienteCount, preparacionCount, finalizadoCount],
+        backgroundColor: ['#dedede', '#db86d7', '#6da9db'],
+        hoverBackgroundColor: ['#7a7a7a', '#7a7a7a', '#7a7a7a'],
+      },
+    ],
+  };
+  
+  const pieOptions = {
+    plugins: {
+      legend: {
+        display: false, // Oculta las leyendas
+      },
+    },
+  };
+
   return (
     <div className='inicioContainer'>
       <div className="statusContainer">
@@ -96,19 +115,25 @@ function Inicio() {
           <h2>Finalizados</h2>
           <p className="numeroCount">{finalizadoCount}</p>
         </div>
+        <div className="pieChartContainer">
+        <Pie data={pieData} options={pieOptions} />
+        </div>
       </div>
       <div className="chartContainer">
         <div>
-          <h2>Repeticiones por Marca</h2>
-          <Bar data={chartData} />
+          <div>
+            <h2>Repeticiones por Marca</h2>
+            <Bar data={chartData} />
+          </div>
         </div>
         <div>
-          <h2>Pedidos por Día</h2>
-          <Bar data={pedidosPorDiaData} />
-        </div>
+            <h2>Pedidos por Día</h2>
+            <Bar data={pedidosPorDiaData} />
+          </div>
       </div>
     </div>
   );
+  
 }
 
 export default Inicio;

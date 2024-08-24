@@ -48,7 +48,9 @@ const Step4 = ({ prevStep }) => {
       });
       console.log('api', data.data);
       actualizarPedido(data.data);
-      printTicket(data.data); // Imprimir el ticket después de finalizar
+      printTicket(data.data); 
+
+      await enviarMensaje(data.data, totalServicios);
     } catch (error) {
       notification.error({
         message: 'Error al crear el pedido',
@@ -62,6 +64,30 @@ const Step4 = ({ prevStep }) => {
       setAdicionales([...adicionales, { descripcion, precio: parseFloat(precio) }]);
       setDescripcion('');
       setPrecio('');
+    }
+  };
+
+  const enviarMensaje = async (pedido, totalServicios) => {
+    const mensaje = `Hola ${pedido.cliente.usu_nombre}, tu pedido es N° ${pedido.ped_codigo}`;
+    const numero = `549${pedido.cliente.usu_telefono}@c.us`;
+
+    try {
+      await fetch('http://localhost:3010/enviar-mensaje', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ mensaje, numero }),
+      });
+      notification.success({
+        message: 'Mensaje enviado',
+        description: 'El mensaje ha sido enviado correctamente.',
+      });
+    } catch (error) {
+      notification.error({
+        message: 'Error al enviar el mensaje',
+        description: error.message,
+      });
     }
   };
 

@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Table, Button, Input, Space, Select, Modal } from 'antd';
+import { Table, Button, Input, Space, Select, Modal, notification } from 'antd';
 import { SearchOutlined } from '@ant-design/icons';
 import Highlighter from 'react-highlight-words';
 import DetallePedido from './detallePedido'; // Asegúrate de importar tu componente DetallePedido
@@ -50,6 +50,16 @@ const HistorialPedidos = () => {
             .catch(error => console.error('Error fetching pedidos:', error));
     };
 
+    const getDetallePedidoMensaje = async (id) => {
+        try {
+            const response = await fetch(`${process.env.REACT_APP_API_URL}pedidos/${id}`);
+            const data = await response.json();
+            return data.data;
+        } catch (error) {
+            console.error('Error fetching pedidos:', error);
+        }
+    };
+
     const handleChangeEstado = (pedidoId, estadoId) => {
         fetch(`${process.env.REACT_APP_API_URL}estados/cambiarEstado`, {
             method: 'PUT',
@@ -70,9 +80,39 @@ const HistorialPedidos = () => {
                     }
                     return pedido;
                 }));
+                if (estadoId === 3) {
+                    enviarMensaje(pedidoId);
+                }
             })
+            
             .catch(error => console.error('Error updating estado:', error));
     };
+
+    const enviarMensaje = async (PedidoId) => {
+        var pedido = await getDetallePedidoMensaje(PedidoId)
+        console.log(pedido);
+        const mensaje = `Hola ${pedido.cliente.usu_nombre}, tu pedido N° ${pedido.ped_codigo} ha sido finalizado!`;
+        const numero = `549${pedido.cliente.usu_telefono}@c.us`;
+    
+        try {
+          await fetch('http://localhost:3010/enviar-mensaje', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ mensaje, numero }),
+          });
+          notification.success({
+            message: 'Mensaje enviado',
+            description: 'El mensaje ha sido enviado correctamente.',
+          });
+        } catch (error) {
+          notification.error({
+            message: 'Error al enviar el mensaje',
+            description: error.message,
+          });
+        }
+      };
 
     const getColumnSearchProps = (dataIndex) => ({
         filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters, close }) => (
@@ -217,6 +257,7 @@ const HistorialPedidos = () => {
                 onCancel={() => setIsDetalleVisible(false)}
                 footer={null}
                 width={800}
+                bodyStyle={{ maxHeight: '70vh', overflowY: 'auto' }}
             >
                 {detallePedido && <DetallePedido detalle={detallePedido} />}
             </Modal>

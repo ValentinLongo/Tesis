@@ -161,7 +161,6 @@ const CUsuarios = () => {
     },
     {
       title: 'Acciones',
-      //key: 'action',
       render: (_, record) => (
         <Space size="middle">
           <Button onClick={() => onEdit(record)}>Editar</Button>
@@ -172,46 +171,38 @@ const CUsuarios = () => {
     },
   ];
 
-  //Le paso el id de permiso y me devuelve el nombre
   const definirTipoUsuario = (values) => {
     let usu_permiso = "";
-    console.log(values);
     if (values === 1) {
       usu_permiso = "Cliente";
     }
     else if (values === 2) {
       usu_permiso = "Administrador";
     }
-    return usu_permiso
+    return usu_permiso;
   };
 
   const onEdit = (record) => {
     setUsuCodigo(record.usu_codigo);
-    setModificarUsuario(record);
+    setModificarUsuario({
+      ...record,
+      usu_permiso: definirTipoUsuario(record.usu_permiso),
+    });
     showDrawer2();
   };
 
-  //Arma objeto de Usuario
   const mapValuesToApi = (values) => {
-    let usu_permiso = "";
-    console.log(values.usu_permiso)
-    if (values.usu_permiso === "Cliente") {
-      usu_permiso = "1";
-    }
-    else {
-      usu_permiso = "2";
-    }
+    let usu_permiso = values.usu_permiso === "Cliente" ? 1 : 2;
     return {
       usu_nombre: values.usu_nombre,
       usu_contra: values.usu_contra,
       usu_email: values.usu_email,
       usu_dni: values.usu_dni,
       usu_telefono: values.usu_telefono,
-      usu_permiso: values.usu_permiso
+      usu_permiso: usu_permiso,
     };
   };
 
-  //Eliminar Usuario
   const eliminarUsuario = (record) => {
     fetch(`${process.env.REACT_APP_API_URL}usuarios/${record.usu_codigo}`, {
       method: 'DELETE',
@@ -225,7 +216,7 @@ const CUsuarios = () => {
           message.success("Usuario eliminado");
           datos();
         }
-        else { //En caso de que sea incorrecto
+        else {
           console.log(json.message)
         }
       })
@@ -234,12 +225,9 @@ const CUsuarios = () => {
       });
   };
 
-  //Modificar usuario
   const modificarUsu = () => {
     const idUsuario = usuCodigo;
     const url = `${process.env.REACT_APP_API_URL}usuarios/` + idUsuario;
-    // Realizar la solicitud POST y obtener la respuesta
-    console.log(JSON.stringify(mapValuesToApi(modificarUsuario)));
     fetch(url, {
       method: "PUT",
       body: JSON.stringify(mapValuesToApi(modificarUsuario)),
@@ -247,18 +235,16 @@ const CUsuarios = () => {
     })
       .then(response => response.json())
       .then(json => {
-        // Leer la respuesta de la API
-        if (json.message === 'Usuario update succefully') { // Si el valor de message es "Usuario Correcto"
+        if (json.message === 'Usuario update succefully') {
           onClose2();
           datos();
           message.success("Usuario modificado correctamente")
         }
-        else { //En caso de que sea incorrecto
+        else {
           console.log(json.message)
         }
       })
       .catch(error => {
-        // Manejar errores de la solicitud
         console.error(error);
       });
   };
@@ -301,7 +287,7 @@ const CUsuarios = () => {
               </Form.Item>
             </Col>
             <Col span={12}>
-              <Form.Item name="usu_telefono" label="Teléfono" rules={[{ required: true, message: 'Por favor, ingrese teléfono' }]}>
+              <Form.Item name="usu_telefono" label="Telefono" rules={[{ required: true, message: 'Por favor, ingrese telefono' }]}>
                 <Input defaultValue={modificarUsuario.usu_telefono} />
               </Form.Item>
             </Col>
@@ -309,21 +295,21 @@ const CUsuarios = () => {
           <Row gutter={14}>
             <Col span={12}>
               <Form.Item name="usu_contra" label="Contraseña" rules={[{ required: true, message: 'Por favor, ingrese contraseña' }]}>
-                <Input defaultValue={modificarUsuario.usu_contra} />
+                <Input.Password defaultValue={modificarUsuario.usu_contra} />
               </Form.Item>
             </Col>
             <Col span={12}>
               <Form.Item name="usu_permiso" label="Tipo de Usuario" rules={[{ required: true, message: 'Por favor, seleccione un tipo de usuario' }]}>
-                <Select defaultValue={definirTipoUsuario(modificarUsuario.usu_permiso)} >
-                  <Option value="Cliente">Cliente</Option>
-                  <Option value="Administrador">Administrador</Option>
+                <Select defaultValue={definirTipoUsuario(modificarUsuario.usu_permiso)}>
+                  <Option value="1">Cliente</Option>
+                  <Option value="2">Administrador</Option>
                 </Select>
               </Form.Item>
             </Col>
           </Row>
         </Form>
       </Drawer>
-      <Table columns={columns} dataSource={data} rowKey="usu_codigo" />
+      <Table columns={columns} dataSource={data} />
     </div>
   );
 };

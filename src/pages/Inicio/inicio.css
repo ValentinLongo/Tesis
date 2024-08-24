@@ -21,6 +21,11 @@
   font-size: 1.0em;
 }
 
+.pieChartContainer{
+  height: 110px;
+  margin-top: 20px;
+}
+
 .statusBox.pendiente {
   background-color: #f5f5f5;
 }
