@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { Table, Button, Input, Space, Select, Modal, notification } from 'antd';
 import { SearchOutlined } from '@ant-design/icons';
 import Highlighter from 'react-highlight-words';
-import DetallePedido from './detallePedido'; // Asegúrate de importar tu componente DetallePedido
+import DetallePedido from './detallePedido';
 
 const { Option } = Select;
 
@@ -13,14 +13,19 @@ const HistorialPedidos = () => {
     const [searchedColumn, setSearchedColumn] = useState('');
     const searchInput = useRef(null);
     const [detallePedido, setDetallePedido] = useState(null);
-    const [isDetalleVisible, setIsDetalleVisible] = useState(false); // Estado para manejar la visibilidad del detalle
+    const [isDetalleVisible, setIsDetalleVisible] = useState(false);
 
     useEffect(() => {
         // Fetch pedidos
         fetch(`${process.env.REACT_APP_API_URL}pedidos`)
-            .then(response => response.json())
-            .then(data => setPedidos(data.data))
-            .catch(error => console.error('Error fetching pedidos:', error));
+        .then(response => response.json())
+        .then(data => {
+            const formattedData = data.data.map(pedido => ({
+                ...pedido,
+                ped_fecha: formatDate(pedido.ped_fecha), // Formatear fecha aquí
+            }));
+            setPedidos(formattedData);
+        })
 
         // Fetch estados
         fetch(`${process.env.REACT_APP_API_URL}estados`)
@@ -86,6 +91,21 @@ const HistorialPedidos = () => {
             })
             
             .catch(error => console.error('Error updating estado:', error));
+    };
+
+    const formatDate = (dateString) => {
+        const date = new Date(dateString);
+        if (isNaN(date.getTime())) {
+            return 'Fecha no válida'; // Manejo de fechas inválidas
+        }
+        // Formatear la fecha en formato 'YYYY-MM-DD HH:mm:ss'
+        const year = date.getFullYear();
+        const month = ('0' + (date.getMonth() + 1)).slice(-2);
+        const day = ('0' + date.getDate()).slice(-2);
+        const hours = ('0' + date.getHours()).slice(-2);
+        const minutes = ('0' + date.getMinutes()).slice(-2);
+        const seconds = ('0' + date.getSeconds()).slice(-2);
+        return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
     };
 
     const enviarMensaje = async (PedidoId) => {
@@ -197,7 +217,7 @@ const HistorialPedidos = () => {
             title: 'Fecha',
             dataIndex: 'ped_fecha',
             key: 'ped_fecha',
-            render: (text) => text.split('T')[0],
+            render: (text) => formatDate(text),
             ...getColumnSearchProps('ped_fecha'),
         },
         {
@@ -245,6 +265,7 @@ const HistorialPedidos = () => {
             ),
         },
     ];
+    
 
     return (
         <div style={{ padding: 20 }}>

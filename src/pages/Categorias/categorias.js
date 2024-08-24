@@ -1,8 +1,7 @@
-import React, { useState, useEffect, useRef, useContext } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Table, Button, Drawer, Form, Row, Col, Input, message, Space } from 'antd';
 import { SearchOutlined } from '@ant-design/icons';
 import Highlighter from 'react-highlight-words';
-import { loginContext } from '../Context/loginContext';
 import AgregarCategoria from './agregarCategoria';
 
 const CCategorias = () => {
@@ -11,6 +10,8 @@ const CCategorias = () => {
   const [drawerEditarCategoria, setDrawerEditarCategoria] = useState(false);
   const [catCodigo, setCatCodigo] = useState(0);
   const [categoriaModi, setCategoriaModi] = useState({});
+  const [searchText, setSearchText] = useState('');
+  const [searchedColumn, setSearchedColumn] = useState('');
   const searchInput = useRef(null);
 
   const abrirDrawerAgregarCategoria = () => {
@@ -33,7 +34,7 @@ const CCategorias = () => {
     fetch(`${process.env.REACT_APP_API_URL}categoria`)
       .then(response => response.json())
       .then(data => {
-        setDataCategoria(data.data || []); // Asegúrate de manejar data.data correctamente
+        setDataCategoria(data.data || []);
       })
       .catch(error => console.error('Error fetching data:', error));
   };
@@ -42,22 +43,83 @@ const CCategorias = () => {
     datosCategorias();
   }, []);
 
-  useEffect(() => {
-    console.log('dataCategoria updated:', dataCategoria); // Verifica el contenido de dataCategoria después de la actualización
-  }, [dataCategoria]);
+  const getColumnSearchProps = (dataIndex) => ({
+    filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters }) => (
+      <div style={{ padding: 8 }}>
+        <Input
+          ref={searchInput}
+          placeholder={`Buscar ${dataIndex}`}
+          value={selectedKeys[0]}
+          onChange={(e) => setSelectedKeys(e.target.value ? [e.target.value] : [])}
+          onPressEnter={() => handleSearch(selectedKeys, confirm, dataIndex)}
+          style={{ marginBottom: 8, display: 'block' }}
+        />
+        <Space>
+          <Button
+            type="primary"
+            onClick={() => handleSearch(selectedKeys, confirm, dataIndex)}
+            icon={<SearchOutlined />}
+            size="small"
+            style={{ width: 90 }}
+          >
+            Buscar
+          </Button>
+          <Button onClick={() => handleReset(clearFilters)} size="small" style={{ width: 90 }}>
+            Reiniciar
+          </Button>
+        </Space>
+      </div>
+    ),
+    filterIcon: (filtered) => (
+      <SearchOutlined style={{ color: filtered ? '#1890ff' : undefined }} />
+    ),
+    onFilter: (value, record) =>
+      record[dataIndex]
+        ? record[dataIndex].toString().toLowerCase().includes(value.toLowerCase())
+        : '',
+    onFilterDropdownVisibleChange: (visible) => {
+      if (visible) {
+        setTimeout(() => searchInput.current?.select(), 100);
+      }
+    },
+    render: (text) =>
+      searchedColumn === dataIndex ? (
+        <Highlighter
+          highlightStyle={{ backgroundColor: '#ffc069', padding: 0 }}
+          searchWords={[searchText]}
+          autoEscape
+          textToHighlight={text ? text.toString() : ''}
+        />
+      ) : (
+        text
+      ),
+  });
+
+  const handleSearch = (selectedKeys, confirm, dataIndex) => {
+    confirm();
+    setSearchText(selectedKeys[0]);
+    setSearchedColumn(dataIndex);
+  };
+
+  const handleReset = (clearFilters) => {
+    clearFilters();
+    setSearchText('');
+  };
 
   const columns = [
     {
-      title: 'id',
+      title: 'ID',
       dataIndex: 'cat_codigo',
       key: 'cat_codigo',
       width: 30,
+      ...getColumnSearchProps('cat_codigo'),
     },
     {
       title: 'Nombre',
       dataIndex: 'cat_descripcion',
       key: 'cat_descripcion',
       width: '75%',
+      ...getColumnSearchProps('cat_descripcion'),
     },
     {
       title: 'Acciones',
@@ -84,7 +146,7 @@ const CCategorias = () => {
   };
 
   const modificarCategoria = () => {
-    const url =  `${process.env.REACT_APP_API_URL}categoria/` + catCodigo;
+    const url = `${process.env.REACT_APP_API_URL}categoria/` + catCodigo;
     fetch(url, {
       method: "PUT",
       body: JSON.stringify(mapValuesToApi(categoriaModi)),
