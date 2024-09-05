@@ -68,7 +68,7 @@ const Step4 = ({ prevStep }) => {
   };
 
   const enviarMensaje = async (pedido, totalServicios) => {
-    const mensaje = `Hola ${pedido.cliente.usu_nombre}, tu pedido es N° ${pedido.ped_codigo}`;
+    const mensaje = `Hola ${pedido.cliente.usu_nombre}, tu pedido es N° ${pedido.ped_codigo}, muchas gracias por confiar en nosotros!`;
     const numero = `549${pedido.cliente.usu_telefono}@c.us`;
 
     try {
